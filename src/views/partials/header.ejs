@@ -20,13 +20,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
     <header>
-        <nav>
+        <div class="logoSection" title="Jems Creations Logo">
+            <img src="/photos/Jems Logo Gem-resize.png" alt="Jems Creations Logo" class="logo">
+            <h1>Jems Creations</h1>
+        </div>
+
+        
+        <nav class="mainMenu">
+            <input type="checkbox" id="menuToggle" hidden>
+            <label class="menuIcon" for="menuToggle">☰</label>
+            
             <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="/products">Products</a></li>
+                <li><a href="/login">login</a></li>
+                <li><a href="/signup">Sign up</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/cart">Cart</a></li>
             </ul>
         </nav>
     </header>
+<main>

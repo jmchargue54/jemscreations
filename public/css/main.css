@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Gwendolyn:wght@400;700&family=Luxurious+Script&family=Pinyon+Script&display=swap');
+
+/* light-red: #a62534 */
+
+
+html, body {
+    background-color: white;
+    margin: 0;
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    background-color: #a62534;
+    width: 100%;
+    margin: 0;
+
+    .logoSection {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-family: "Pinyon Script", cursive;
+        font-size: 20px;
+        color:black;
+    }
+    
+    .logo {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+body {
+    nav {
+        display: flex;
+        align-items: center;
+        flex-direction: row-reverse;
+        ul {
+            display: none;
+            font-size: 20px;
+            text-align: right;
+        }
+
+        li {
+            display: inline;
+            margin-left: 15px;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .menuIcon {
+            display: flex;
+            font-size: 30px;
+            cursor: pointer;
+            color: white;
+            padding: 10px;
+        }
+    
+        #menuToggle:checked ~ ul {
+            display: flex;
+        }
+    }
+
+
+    main {
+        color: #6b0e19;
+        padding: 20px;
+
+    }
+
+    /* Home Page */
+    .welcome {
+        display: flex;
+        gap: 20px;
+        width: 70%;
+
+        img {
+            width: 250px;
+        }
+        p {
+            font-size: 18px;
+            align-self: top;
+            margin: 0;
+        }
+    }
+    .process {
+        img {
+            height: 150px;
+        }
+    }
+}
+
+/* Products */
+.productsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 50px;
+
+    .productItem {
+        max-width: 220px;
+    }
+}
+
+footer {
+    position: relative;
+    bottom: 0;
+    text-align: left;
+    margin-top: 20px;
+    margin-left: 20px;
+    font-size: 14px;
+    color: #777;
+}

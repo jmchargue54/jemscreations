@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { jewelryProducts } from './src/models/jewelryData.mjs';
 
 /* 
 Variables
@@ -40,8 +41,23 @@ app.get('/', (req, res) => {
 });
 
 app.get('/products', (req, res) => {
-    const title = 'Our Products';
-    res.render('products', { title });
+    res.render('products', { title: "Products", jewelryProducts: jewelryProducts });
+});
+
+app.get('/login', (req, res) => {
+    res.render('login', { title: "Login" });
+});
+
+app.get('/signup', (req, res) => {
+    res.render('signup', { title: "Sign Up" });
+});
+
+app.get('/dashboard', (req, res) => {
+    res.render('dashboard', { title: "Dashboard", user: { id: 1, name: "Jane Doe", email: "janedoe@email.com" } });
+});
+
+app.get('/cart', (req, res) => {
+    res.render('cart', { title: "Shopping Cart" });
 });
 
 // When in development mode, start a WebSocket server for live reloading

@@ -1,0 +1,17 @@
+<%- include('partials/header') %>
+<div class="productList">
+    <h1><%= title %></h1>
+    <div class="productsContainer">
+        <% jewelryProducts.forEach(product => { %>
+            <div class="productItem">
+                <img src="<%= product.image %>" alt="<%= product.name %>">
+                <h2><%= product.name %></h2>
+                <p><%= product.description %></p>
+                <p class="price">$<%= product.price %></p>
+                <button class="addToCartBtn" data-product-id="<%= product.id %>">Add to Cart</button>
+            </div>
+        <% }) %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
