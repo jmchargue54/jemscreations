@@ -44,6 +44,23 @@ app.get('/products', (req, res) => {
     res.render('products', { title: "Products", jewelryProducts: jewelryProducts });
 });
 
+app.get('/product/:id', (req, res, next) => {
+    const productId = parseInt(req.params.id);
+    const product = jewelryProducts.find(p => p.id === productId);
+
+    if (!product) {
+        const err = new Error('Product Not Found');
+        err.status = 404;
+        return next(err);
+    }
+
+    // log parameter for debugging
+    console.log('Product found:', product);
+
+    // Render product detail page
+    res.render('productDetail', { title: product.name, product: product });
+});
+
 app.get('/login', (req, res) => {
     res.render('login', { title: "Login" });
 });
@@ -58,6 +75,35 @@ app.get('/dashboard', (req, res) => {
 
 app.get('/cart', (req, res) => {
     res.render('cart', { title: "Shopping Cart" });
+});
+
+
+// Catch-all route for 404 errors
+app.use((req, res, next) => {
+    const err = new Error('Page Not Found');
+    err.status = 404;
+    next(err);
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+    // Log error details for debugging
+    console.error('Error occurred:', err.message);
+    console.error('Stack trace:', err.stack);
+
+    // Determine status and template
+    const status = err.status || 500;
+    const template = status === 404 ? '404' : '500';
+
+    // Prepare data for the template
+    const context = {
+        title: status === 404 ? 'Page Not Found' : 'Server Error',
+        error: err.message,
+        stack: err.stack
+    };
+
+    // Render the appropriate error template
+    res.status(status).render(`errors/${template}`, context);
 });
 
 // When in development mode, start a WebSocket server for live reloading

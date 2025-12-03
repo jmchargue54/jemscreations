@@ -110,6 +110,10 @@ body {
     }
 }
 
+img.errorimg {
+    width: 300px;
+}
+
 footer {
     position: relative;
     bottom: 0;
