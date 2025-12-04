@@ -14,7 +14,7 @@ html, body {
 
 header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     margin-bottom: 30px;
     background-color: #a62534;
     width: 100%;
@@ -27,11 +27,15 @@ header {
         font-family: "Pinyon Script", cursive;
         font-size: 20px;
         color:black;
+        h1 {
+            margin-left: 20px;
+        }
     }
     
     .logo {
         width: 50px;
         height: 50px;
+        margin-left: -12px;
     }
 }
 
@@ -105,8 +109,97 @@ body {
     justify-content: center;
     gap: 50px;
 
+    
+    .addToCartBtn {
+        background-color: #a62534;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
     .productItem {
         max-width: 220px;
+        a {
+            color: #6b0e19;
+            font-size: 22px;
+            text-decoration: none;
+            
+        }
+    }
+}
+
+#productsDetailContainer {
+    .productItem {
+        display: flex;
+        gap: 20px;
+        max-width: 800px;
+        margin-top: 20px;
+        img {
+            width: 400px;
+        }
+        .productDetailsInfo {
+            h2 {
+                margin: 0;
+            }
+            .price {
+                font-size: 20px;
+                color: #a62534;
+                font-weight: bold;
+                margin-top: 20px;
+                text-align: right;
+            }
+            .addToCartBtn {
+                display: flex;
+                align-items: right;
+            }
+        }
+    }
+}
+
+.homeProducts {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 1rem;
+    scroll-snap-type: x mandatory;
+
+    .productsContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    justify-content: flex-start;
+    flex: 0 0 auto;
+
+        .productItem {
+            scroll-snap-align: start;
+            text-wrap: wrap;
+        }
+    }
+
+    .seeMoreBtn {
+        background-color: #a62534;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        height: fit-content;
+        width: fit-content;
+        text-decoration: none;
+    }
+    .seeMoreContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-self: center;
+        background-color: #a62534;
+        margin-left: 20px;
+        img {
+            width: 100px;
+            align-self: center;
+        }
     }
 }
 

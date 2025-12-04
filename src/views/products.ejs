@@ -1,11 +1,54 @@
 <%- include('partials/header') %>
 <div class="productList">
     <h1><%= title %></h1>
+    <div class="sort-options">
+        <span>Sort by:</span>
+        <a href="/products?sortBy=priceAsc" class="<% currentSort === 'priceAsc' ? 'active' : '' %>">Price Ascending</a>
+        <a href="/products?sortBy=priceDesc" class="<% currentSort === 'priceDesc' ? 'active' : '' %>">Price Descending</a>
+        <a href="/products?sortBy=nameAsc" class="<% currentSort === 'nameAsc' ? 'active' : '' %>">Name Ascending</a>
+        <a href="/products?sortBy=nameDesc" class="<% currentSort === 'nameDesc' ? 'active' : '' %>">Name Descending</a>
+    </div>
+    <div class="filter-options">
+        <span>Filter by:</span>
+        <form method="GET" action="/products" class="filter-form">
+            <label>
+                <input type="checkbox" name="tag" value="necklace"
+                <%= currentTags.includes('necklace') ? 'checked' : '' %> >
+                Necklaces
+            </label>
+
+            <label>
+                <input type="checkbox" name="tag" value="earrings"
+                <%= currentTags.includes('earrings') ? 'checked' : '' %> >
+                Earrings
+            </label>
+
+            <label>
+                <input type="checkbox" name="tag" value="bracelet"
+                <%= currentTags.includes('bracelet') ? 'checked' : '' %> >
+                Bracelets
+            </label>
+
+            <label>
+                <input type="checkbox" name="tag" value="ring"
+                <%= currentTags.includes('ring') ? 'checked' : '' %> >
+                Rings
+            </label>
+
+            <label>
+                <input type="checkbox" name="tag" value="other"
+                <%= currentTags.includes('other') ? 'checked' : '' %> >
+                Other
+            </label>
+
+            <button type="submit">Apply Filters</button>
+        </form>
+    </div>
     <div class="productsContainer">
-        <% jewelryProducts.forEach(product => { %>
+        <% products.forEach(product => { %>
             <div class="productItem">
                 <img src="<%= product.image %>" alt="<%= product.name %>">
-                <h2><%= product.name %></h2>
+                <h2><a href="/products/<%= product.id %>"><%= product.name %></a></h2>
                 <p><%= product.description %></p>
                 <p class="price">$<%= product.price %></p>
                 <button class="addToCartBtn" data-product-id="<%= product.id %>">Add to Cart</button>

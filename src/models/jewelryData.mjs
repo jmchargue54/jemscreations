@@ -2,7 +2,7 @@ const jewelryProducts = [
   {
     id: 1,
     image: "https://picsum.photos/200",
-    name: "Blue Swirl Coffin",
+    name: "Blue Swirl Coffin Earrings",
     description: "Handcrafted resin earrings with embedded gold flakes for a subtle shimmer.",
     tag: "earrings",
     price: 24.99
@@ -10,7 +10,7 @@ const jewelryProducts = [
   {
     id: 2,
     image: "https://picsum.photos/200",
-    name: "Circle Framed Flowers",
+    name: "Circle Framed Flowers Necklace",
     description: "Natural cedar wood pendant with a smooth finish on adjustable black cord.",
     tag: "necklace",
     price: 29.99
@@ -18,7 +18,7 @@ const jewelryProducts = [
   {
     id: 3,
     image: "https://picsum.photos/200",
-    name: "Ocean Glass Cuff",
+    name: "Ocean Glass Cuff Bracelet",
     description: "Clear resin cuff bracelet with sea-blue swirls inspired by coastal tides.",
     tag: "bracelet",
     price: 19.99
@@ -42,7 +42,7 @@ const jewelryProducts = [
   {
     id: 6,
     image: "https://picsum.photos/200",
-    name: "Rose Petal Hoops",
+    name: "Rose Petal Hoops Earrings",
     description: "Clear resin hoops containing real dried rose petals for a romantic look.",
     tag: "earrings",
     price: 22.99
@@ -50,7 +50,7 @@ const jewelryProducts = [
   {
     id: 7,
     image: "https://picsum.photos/200/200",
-    name: "Maple Grain Beads",
+    name: "Maple Grain Beads Bracelet",
     description: "Stretch bracelet made from smooth maple wood beads with a natural finish.",
     tag: "bracelet",
     price: 17.99
@@ -58,7 +58,7 @@ const jewelryProducts = [
   {
     id: 8,
     image: "https://picsum.photos/200",
-    name: "Teardrop Quartz Pendant",
+    name: "Teardrop Quartz Pendant Necklace",
     description: "Necklace with a teardrop-shaped clear resin pendant containing quartz chips.",
     tag: "necklace",
     price: 27.99
@@ -66,7 +66,7 @@ const jewelryProducts = [
   {
     id: 9,
     image: "https://picsum.photos/200",
-    name: "Emerald Forest Band",
+    name: "Emerald Forest Band Ring",
     description: "Resin ring with swirling green pigments reminiscent of forest moss.",
     tag: "ring",
     price: 13.99

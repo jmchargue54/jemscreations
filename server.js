@@ -32,19 +32,68 @@ app.use((req, res, next) => {
     next();
 });
 
+// Add current year for copyright
+app.use((req, res, next) => {
+    res.locals.currentYear = new Date().getFullYear();
+    next();
+});
+
+// share query parameters with templates
+app.use((req, res, next) => {
+    res.locals.queryParams = req.query;
+
+    next();
+});
+
 /* 
 Routes
  */
 app.get('/', (req, res) => {
-    const title = 'Jems Creations Home';
-    res.render('home', { title });
+    res.render('home', { title: 'Welcome!', jewelryProducts });
 });
 
 app.get('/products', (req, res) => {
-    res.render('products', { title: "Products", jewelryProducts: jewelryProducts });
+    const sortBy = req.query.sortBy || 'default';
+
+    let tags = req.query.tag;
+    if (tags && !Array.isArray(tags)) {
+        tags = [tags];
+    }
+
+    let products = [...jewelryProducts];
+
+    if (tags && tags.length > 0) {
+        products = products.filter(product =>
+            tags.map(t => t.toLowerCase()).includes(product.tag.toLowerCase())
+        );
+    }
+
+    switch (sortBy) {
+        case 'priceAsc':
+            products.sort((a, b) => a.price - b.price);
+            break;
+        case 'priceDesc':
+            products.sort((a, b) => b.price - a.price);
+            break;
+        case 'nameAsc':
+            products.sort((a, b) => a.name.localeCompare(b.name));
+            break;
+        case 'nameDesc':
+            products.sort((a, b) => b.name.localeCompare(a.name));
+            break;
+        default:
+            break;
+    }
+
+    res.render('products', { 
+        title: "Products", 
+        products,
+        currentSort: sortBy,
+        currentTags: tags || []
+    });
 });
 
-app.get('/product/:id', (req, res, next) => {
+app.get('/products/:id', (req, res, next) => {
     const productId = parseInt(req.params.id);
     const product = jewelryProducts.find(p => p.id === productId);
 
@@ -58,11 +107,17 @@ app.get('/product/:id', (req, res, next) => {
     console.log('Product found:', product);
 
     // Render product detail page
-    res.render('productDetail', { title: product.name, product: product });
+    res.render('productDetail', { 
+        title: product.name, 
+        product: product,
+        products: jewelryProducts
+    });
 });
 
 app.get('/login', (req, res) => {
-    res.render('login', { title: "Login" });
+    res.render('login', { 
+        title: "Login",
+    });
 });
 
 app.get('/signup', (req, res) => {

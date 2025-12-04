@@ -1,0 +1,17 @@
+<%- include('partials/header') %>
+<div class="productList">
+    <p><a href="/products">Back to Products</a></p>
+    <div id="productsDetailContainer" class="productsContainer">
+        <div class="productItem">
+            <img src="<%= product.image %>" alt="<%= product.name %>">
+            <div class="productDetailsInfo">
+                <h2><%= product.name %></h2>
+                <p><%= product.description %></p>
+                <p class="price">$<%= product.price %></p>
+                <button class="addToCartBtn" data-product-id="<%= product.id %>">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
