@@ -2,7 +2,7 @@
     <h1><%= title %></h1>
     <div class="homeProducts">
         <div class="productsContainer">
-            <% jewelryProducts.slice(0,5).forEach(product => { %>
+            <% getAllProducts.slice(0,5).forEach(product => { %>
                 <div class="productItem">
                     <img src="<%= product.image %>" alt="<%= product.name %>">
                     <h2><a href="/products/<%= product.id %>"><%= product.name %></a></h2>

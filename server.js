@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { jewelryProducts } from './src/models/jewelryData.mjs';
+import routes from './src/controllers/routes.js';
 
 /* 
 Variables
@@ -48,92 +48,13 @@ app.use((req, res, next) => {
 /* 
 Routes
  */
-app.get('/', (req, res) => {
-    res.render('home', { title: 'Welcome!', jewelryProducts });
-});
+app.use('/', routes)
 
-app.get('/products', (req, res) => {
-    const sortBy = req.query.sortBy || 'default';
+/* 
+Error Handling
+ */
 
-    let tags = req.query.tag;
-    if (tags && !Array.isArray(tags)) {
-        tags = [tags];
-    }
-
-    let products = [...jewelryProducts];
-
-    if (tags && tags.length > 0) {
-        products = products.filter(product =>
-            tags.map(t => t.toLowerCase()).includes(product.tag.toLowerCase())
-        );
-    }
-
-    switch (sortBy) {
-        case 'priceAsc':
-            products.sort((a, b) => a.price - b.price);
-            break;
-        case 'priceDesc':
-            products.sort((a, b) => b.price - a.price);
-            break;
-        case 'nameAsc':
-            products.sort((a, b) => a.name.localeCompare(b.name));
-            break;
-        case 'nameDesc':
-            products.sort((a, b) => b.name.localeCompare(a.name));
-            break;
-        default:
-            break;
-    }
-
-    res.render('products', { 
-        title: "Products", 
-        products,
-        currentSort: sortBy,
-        currentTags: tags || []
-    });
-});
-
-app.get('/products/:id', (req, res, next) => {
-    const productId = parseInt(req.params.id);
-    const product = jewelryProducts.find(p => p.id === productId);
-
-    if (!product) {
-        const err = new Error('Product Not Found');
-        err.status = 404;
-        return next(err);
-    }
-
-    // log parameter for debugging
-    console.log('Product found:', product);
-
-    // Render product detail page
-    res.render('productDetail', { 
-        title: product.name, 
-        product: product,
-        products: jewelryProducts
-    });
-});
-
-app.get('/login', (req, res) => {
-    res.render('login', { 
-        title: "Login",
-    });
-});
-
-app.get('/signup', (req, res) => {
-    res.render('signup', { title: "Sign Up" });
-});
-
-app.get('/dashboard', (req, res) => {
-    res.render('dashboard', { title: "Dashboard", user: { id: 1, name: "Jane Doe", email: "janedoe@email.com" } });
-});
-
-app.get('/cart', (req, res) => {
-    res.render('cart', { title: "Shopping Cart" });
-});
-
-
-// Catch-all route for 404 errors
+// 404 errors
 app.use((req, res, next) => {
     const err = new Error('Page Not Found');
     err.status = 404;
