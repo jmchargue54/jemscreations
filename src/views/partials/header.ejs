@@ -21,6 +21,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
     <link rel="stylesheet" href="/css/main.css">
+    <%- renderStyles() %>
+    <%- renderScripts() %>
 </head>
 <body>
     <header>
@@ -41,6 +43,8 @@
                 <li><a href="/signup">Sign up</a></li>
                 <li><a href="/dashboard">Dashboard</a></li>
                 <li><a href="/cart">Cart</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <li><a href="/createProduct">Create Product</a></li>
             </ul>
         </nav>
     </header>

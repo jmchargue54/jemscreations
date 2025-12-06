@@ -1,6 +1,11 @@
 import { getAllProducts, getSortedFilteredProducts } from "../models/products/products.js";
 
+const addProductSpecificStyles = (res) => {
+    res.addStyle('<link rel="stylesheet" href="/css/products.css">');
+};
+
 const productsPage = async (req, res) => {
+    addProductSpecificStyles(res);
     const sortBy = req.query.sortBy || 'default';
     let tags = req.query.tag;
     const products = await getSortedFilteredProducts(getAllProducts(), sortBy, tags);
@@ -13,9 +18,9 @@ const productsPage = async (req, res) => {
     });
 };
 
-const productDetailPage = (req, res, next) => {
+const productDetailPage = async (req, res, next) => {
     const productId = parseInt(req.params.id);
-    const product = getAllProducts.find(p => p.id === productId);
+    const product = await getAllProducts.find(p => p.id === productId);
 
     if (!product) {
         const err = new Error('Product Not Found');

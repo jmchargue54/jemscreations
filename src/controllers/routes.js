@@ -1,13 +1,14 @@
 import { Router } from 'express';
-import { homePage } from './index.js';
+const router = Router();
+
+import { homePage } from './home.js';
 import { productsPage, productDetailPage } from './products.js';
 import { loginPage } from './forms/login.js';
 import { signupPage } from './forms/signup.js';
 import { dashboardPage } from './userPages/dashboard.js';
 import { cartPage } from './userPages/cart.js';
-
-const router = Router();
-
+import { contactPage, processContactForm, showContactResponses, contactValidation } from './forms/contact.js';
+import { createProductPage } from './forms/createProject.js';
 
 // home and about page
 router.get('/', homePage);
@@ -16,16 +17,22 @@ router.get('/', homePage);
 router.get('/products', productsPage);
 router.get('/products/:id', productDetailPage);
 
-// login
-router.get('/login', loginPage);
+// create product
+router.get('/createProduct', createProductPage);
 
-// signup page
-app.get('/signup', signupPage);
+// login and signup
+router.get('/login', loginPage);
+router.get('/signup', signupPage);
+
+// contact
+router.get('/contact', contactPage);
+router.post('/contact', contactValidation, processContactForm);
+router.get('/contact/responses', showContactResponses);
 
 // dashboard
-app.get('/dashboard', dashboardPage);
+router.get('/dashboard', dashboardPage);
 
 // shopping cart
-app.get('/cart', cartPage);
+router.get('/cart', cartPage);
 
 export default router;

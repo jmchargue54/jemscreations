@@ -1,49 +1,41 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import routes from './src/controllers/routes.js';
 
-/* 
-Variables
+// MVC components
+import routes from './src/controllers/routes.js';
+import globalMiddleware from './src/middleware/global.js';
+import { setupDatabase, testConnection } from './src/models/setup.js';
+
+/*
+Server Configuration
  */
-const name = process.env.NAME || 'World';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const app = express();
 const NODE_ENV = process.env.NODE_ENV || 'production';
 const PORT = process.env.PORT || 3000;
+// setup express server
+const app = express();
 
 /* 
-Configure Middleware
+Configure Express
  */
 
 // static files
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Allow Express to receive and process common POST data
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Set EJS as the templating engine
 app.set('view engine', 'ejs');
 app.set ('views', path.join(__dirname, 'src/views'));
 
 /* 
-Global middleware
+Global Middleware
  */
-app.use((req, res, next) => {
-    res.locals.NODE_ENV = NODE_ENV.toLocaleLowerCase() || 'production';
-    next();
-});
-
-// Add current year for copyright
-app.use((req, res, next) => {
-    res.locals.currentYear = new Date().getFullYear();
-    next();
-});
-
-// share query parameters with templates
-app.use((req, res, next) => {
-    res.locals.queryParams = req.query;
-
-    next();
-});
+app.use(globalMiddleware);
 
 /* 
 Routes
@@ -63,13 +55,15 @@ app.use((req, res, next) => {
 
 // Global error handler
 app.use((err, req, res, next) => {
-    // Log error details for debugging
-    console.error('Error occurred:', err.message);
-    console.error('Stack trace:', err.stack);
-
     // Determine status and template
     const status = err.status || 500;
     const template = status === 404 ? '404' : '500';
+    
+    // Log error details for debugging
+    if (status === 404) {
+        console.error('Error occurred:', err.message);
+        console.error('Stack trace:', err.stack);
+    }
 
     // Prepare data for the template
     const context = {
@@ -81,6 +75,10 @@ app.use((err, req, res, next) => {
     // Render the appropriate error template
     res.status(status).render(`errors/${template}`, context);
 });
+
+/* 
+Development Tools
+ */
 
 // When in development mode, start a WebSocket server for live reloading
 if (NODE_ENV.includes('dev')) {
@@ -103,8 +101,15 @@ if (NODE_ENV.includes('dev')) {
 }
 
 /*
-Start the server and listen on the specified port
+Start Server
  */
-app.listen(PORT, () => {
-    console.log(`Server is running on http://127.0.0.1:${PORT}`);
+app.listen(PORT, async () => {
+    try {
+        await testConnection();
+        await setupDatabase();
+        console.log(`Server is running on http://127.0.0.1:${PORT}`);
+    } catch (error) {
+        console.error('Database setup failed:', error.message);
+        process.exit(1);
+    }
 });

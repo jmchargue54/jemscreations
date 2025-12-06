@@ -1,6 +1,6 @@
 // render sign up page
 const signupPage = (req, res) => {
-    res.render('signup', { 
+    res.render('forms/signup', { 
         title: "Sign Up",
     });
 };

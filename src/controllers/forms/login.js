@@ -1,6 +1,6 @@
 // render login page
 const loginPage = (req, res) => {
-    res.render('login', { 
+    res.render('forms/login', { 
         title: "Login",
     });
 };
