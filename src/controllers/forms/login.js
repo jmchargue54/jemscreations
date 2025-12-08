@@ -1,22 +1,5 @@
 import { validationResult } from 'express-validator';
 import { findUserByEmail, verifyPassword } from '../../models/forms/login.js';
-import { body } from 'express-validator';
-
-/**
- * Validation rules for login form
- */
-const loginValidation = [
-    body('email')
-        .trim()
-        .isEmail()
-        .withMessage('Please provide a valid email address')
-        .normalizeEmail(),
-
-    body('password')
-        .isLength({ min: 8 })
-        .withMessage('Password is required')
-];
-
 
 const addLoginSpecificStyles = (res) => {
     res.addStyle('<link rel="stylesheet" href="/css/login.css">');
@@ -51,7 +34,7 @@ const processLogin = async (req, res) => {
     const user = await findUserByEmail(email);
     // TODO: If user not found, log "User not found" and redirect back
     if (!user) {
-        req.flash('error', 'User not found');
+        // req.flash('error', 'User not found');
         console.log('User not found');
         return res.redirect('/login');
     }
@@ -63,7 +46,7 @@ const processLogin = async (req, res) => {
 
     // TODO: If password incorrect, log "Invalid password" and redirect back
     if (!passwordMatch) {
-        req.flash('error', 'Invalid password');
+        // req.flash('error', 'Invalid password');
         console.log('Invalid password');
         return res.redirect('/login');
     }
@@ -75,7 +58,7 @@ const processLogin = async (req, res) => {
     req.session.user = user;
 
     // TODO: Redirect to protected dashboard (/dashboard)
-    req.flash('success', 'Login successful!');
+    // req.flash('success', 'Login successful!');
     res.redirect('/dashboard');
 };
 
@@ -153,5 +136,4 @@ export {
     processLogin, 
     processLogout, 
     showDashboard, 
-    loginValidation
 };

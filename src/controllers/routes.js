@@ -8,9 +8,9 @@ import { showContactForm, processContactForm, showContactResponses, contactValid
 import { createProductPage } from './forms/createProduct.js';
 import { showRegistrationForm, processRegistration, showAllUsers } from './forms/registration.js';
 import { requireLogin } from '../middleware/auth.js';
-import { showLoginForm, processLogin, processLogout, showDashboard, loginValidation } from './forms/login.js';
-
+import { showLoginForm, processLogin, processLogout, showDashboard } from './forms/login.js';
 import { registrationValidation } from '../middleware/validation/registration.js';
+import { loginValidation } from '../middleware/validation/login.js';
 
 // home and about page
 router.get('/', homePage);
@@ -27,18 +27,18 @@ router.get('/register', showRegistrationForm);
 router.post('/register', registrationValidation, processRegistration);
 router.get('/users', showAllUsers);
 
-// login
+// login and logout
 router.get('/login', showLoginForm);
 router.post('/login', loginValidation, processLogin);
 router.get('/logout', processLogout);
+
+// dashboard
+router.get('/dashboard', requireLogin, showDashboard);
 
 // contact
 router.get('/contact', showContactForm);
 router.post('/contact', contactValidation, processContactForm);
 router.get('/contact/responses', showContactResponses);
-
-// dashboard
-router.get('/dashboard', requireLogin, showDashboard);
 
 // shopping cart
 router.get('/cart', requireLogin, cartPage);
