@@ -3,12 +3,14 @@ const router = Router();
 
 import { homePage } from './home.js';
 import { productsPage, productDetailPage } from './products.js';
-import { loginPage } from './forms/login.js';
-import { signupPage } from './forms/signup.js';
-import { dashboardPage } from './userPages/dashboard.js';
 import { cartPage } from './userPages/cart.js';
-import { contactPage, processContactForm, showContactResponses, contactValidation } from './forms/contact.js';
-import { createProductPage } from './forms/createProject.js';
+import { showContactForm, processContactForm, showContactResponses, contactValidation } from './forms/contact.js';
+import { createProductPage } from './forms/createProduct.js';
+import { showRegistrationForm, processRegistration, showAllUsers } from './forms/registration.js';
+import { requireLogin } from '../middleware/auth.js';
+import { showLoginForm, processLogin, processLogout, showDashboard, loginValidation } from './forms/login.js';
+
+import { registrationValidation } from '../middleware/validation/registration.js';
 
 // home and about page
 router.get('/', homePage);
@@ -20,19 +22,25 @@ router.get('/products/:id', productDetailPage);
 // create product
 router.get('/createProduct', createProductPage);
 
-// login and signup
-router.get('/login', loginPage);
-router.get('/signup', signupPage);
+// User registration routes
+router.get('/register', showRegistrationForm);
+router.post('/register', registrationValidation, processRegistration);
+router.get('/users', showAllUsers);
+
+// login
+router.get('/login', showLoginForm);
+router.post('/login', loginValidation, processLogin);
+router.get('/logout', processLogout);
 
 // contact
-router.get('/contact', contactPage);
+router.get('/contact', showContactForm);
 router.post('/contact', contactValidation, processContactForm);
 router.get('/contact/responses', showContactResponses);
 
 // dashboard
-router.get('/dashboard', dashboardPage);
+router.get('/dashboard', requireLogin, showDashboard);
 
 // shopping cart
-router.get('/cart', cartPage);
+router.get('/cart', requireLogin, cartPage);
 
 export default router;

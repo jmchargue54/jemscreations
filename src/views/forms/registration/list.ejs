@@ -1,0 +1,46 @@
+<%- include('../../partials/header') %>
+
+    <h1><%= title %></h1>
+
+    <!-- TODO: Check if users array exists and has content -->
+    <% if (users && users.length > 0) { %>
+        <table class="user-list">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Registration Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- TODO: Loop through users and display: ID, name, email, registration date -->
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td><%= user.id %></td>
+                        <td><%= user.name %></td>
+                        <td><%= user.email %></td>
+                        <!-- TODO: Format the created_at date nicely -->
+                        <td>
+                            <%= new Date(user.created_at).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            }) %>
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <!-- TODO: Handle the case when no users are registered -->
+    <% } else { %>
+        <p class="no-users">No registered users found.</p>
+        <p><a href="/registration">Be the first to register!</a></p>
+    <% } %>
+
+<%- include('../../partials/footer') %>

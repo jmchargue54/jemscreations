@@ -1,3 +1,5 @@
+import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -20,6 +22,25 @@ const app = express();
 /* 
 Configure Express
  */
+// Initialize PostgreSQL session store
+    const pgSession = connectPgSimple(session);
+
+    // Configure session middleware
+    app.use(session({
+    store: new pgSession({
+        conString: process.env.DB_URL,
+        tableName: 'session', // The name for our "sessions" table in the db
+        createTableIfMissing: true
+    }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: NODE_ENV.includes('dev') !== true,
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000
+    }
+}));
 
 // static files
 app.use(express.static(path.join(__dirname, 'public')));

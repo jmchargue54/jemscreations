@@ -37,14 +37,19 @@
             <label class="menuIcon" for="menuToggle">☰</label>
             
             <ul>
+                <% if (isLoggedIn) { %>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/cart">Cart</a></li>
+                <% } else { %>
                 <li><a href="/">Home</a></li>
                 <li><a href="/products">Products</a></li>
                 <li><a href="/login">login</a></li>
-                <li><a href="/signup">Sign up</a></li>
-                <li><a href="/dashboard">Dashboard</a></li>
-                <li><a href="/cart">Cart</a></li>
+                <li><a href="/register">Register</a></li>
+                <li><a href="/users">All Users</a></li>
                 <li><a href="/contact">Contact</a></li>
+                <li><a href="/contact/responses">Contact Responses</a></li>
                 <li><a href="/createProduct">Create Product</a></li>
+                <% } %>
             </ul>
         </nav>
     </header>
