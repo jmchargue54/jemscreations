@@ -46,7 +46,7 @@ const verifyPassword = async (plainPassword, hashedPassword) => {
         return result;
 
     } catch (error) {
-        // req.flash('error', 'Error verifying password');
+        req.flash('error', 'Error verifying password');
         console.error('Error verifying password:', error);
         return false;
     }

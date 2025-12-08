@@ -32,6 +32,27 @@
                         </td>
                         <td>
 
+                            <% if (session && session.user) { %>
+                                <% 
+                                const currentUser = session.user;
+                                const isOwnCard = currentUser.id === user.id;
+                                const isAdmin = currentUser.role_name === 'admin';
+                                const canEdit = isOwnCard || isAdmin;
+                                const canDelete = isAdmin && !isOwnCard;
+                                %>
+                            <div class="actions">
+                                <% if (canEdit) { %>
+                                    <a href="/users/<%= user.id %>/edit">Edit</a>
+                                    <% } %>
+                                    <% if (canDelete) { %>
+                                        <form method="POST" action="/users/<%= user.id %>/delete" style="display: inline;">
+                                            <button type="submit" onclick="return confirm('Delete this user?')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                <% } %>
+                            </div>
+                            <% } %>
                         </td>
                     </tr>
                 <% }) %>

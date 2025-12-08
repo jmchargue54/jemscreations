@@ -1,16 +1,52 @@
 import { Router } from 'express';
 const router = Router();
 
-import { homePage } from './home.js';
-import { productsPage, productDetailPage } from './products.js';
-import { cartPage } from './userPages/cart.js';
-import { showContactForm, processContactForm, showContactResponses, contactValidation } from './forms/contact.js';
-import { createProductPage } from './forms/createProduct.js';
-import { showRegistrationForm, processRegistration, showAllUsers } from './forms/registration.js';
-import { requireLogin } from '../middleware/auth.js';
-import { showLoginForm, processLogin, processLogout, showDashboard } from './forms/login.js';
-import { registrationValidation } from '../middleware/validation/registration.js';
-import { loginValidation } from '../middleware/validation/login.js';
+import { 
+    homePage 
+    } from './home.js';
+import { 
+    productsPage, 
+    productDetailPage 
+    } from './products.js';
+import { 
+    cartPage 
+    } from './userPages/cart.js';
+import { 
+    showContactForm, 
+    processContactForm, 
+    showContactResponses,  
+    } from './forms/contact.js';
+import { 
+    createProductPage 
+    } from './forms/createProduct.js';
+import { 
+    showRegistrationForm, 
+    processRegistration, 
+    showAllUsers,
+    showEditAccountForm,
+    processEditAccount, 
+    processDeleteAccount
+    } from './forms/registration.js';
+import { 
+    requireLogin,
+    requireRole
+    } from '../middleware/auth.js';
+import {
+    contactValidation
+    } from '../middleware/validation/contact.js';
+import { 
+    showLoginForm, 
+    processLogin, 
+    processLogout, 
+    showDashboard 
+    } from './forms/login.js';
+import { 
+    registrationValidation, 
+    updateAccountValidation 
+    } from '../middleware/validation/registration.js';
+import { 
+    loginValidation 
+    } from '../middleware/validation/login.js';
 
 // home and about page
 router.get('/', homePage);
@@ -34,6 +70,11 @@ router.get('/logout', processLogout);
 
 // dashboard
 router.get('/dashboard', requireLogin, showDashboard);
+
+// Account management routes
+router.get('/users/:id/edit', requireLogin, showEditAccountForm);
+router.post('/users/:id/update', requireLogin, updateAccountValidation, processEditAccount);
+router.post('/users/:id/delete', requireRole('admin'), processDeleteAccount);
 
 // contact
 router.get('/contact', showContactForm);

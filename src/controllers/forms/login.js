@@ -11,7 +11,7 @@ const addLoginSpecificStyles = (res) => {
 const showLoginForm = (req, res) => {
     addLoginSpecificStyles(res);
 
-    res.render('forms/login', {
+    res.render('forms/login/login', {
         title: 'User Login'
     });
 };
@@ -34,7 +34,7 @@ const processLogin = async (req, res) => {
     const user = await findUserByEmail(email);
     // TODO: If user not found, log "User not found" and redirect back
     if (!user) {
-        // req.flash('error', 'User not found');
+        req.flash('error', 'User not found');
         console.log('User not found');
         return res.redirect('/login');
     }
@@ -46,7 +46,7 @@ const processLogin = async (req, res) => {
 
     // TODO: If password incorrect, log "Invalid password" and redirect back
     if (!passwordMatch) {
-        // req.flash('error', 'Invalid password');
+        req.flash('error', 'Invalid password');
         console.log('Invalid password');
         return res.redirect('/login');
     }
@@ -58,7 +58,7 @@ const processLogin = async (req, res) => {
     req.session.user = user;
 
     // TODO: Redirect to protected dashboard (/dashboard)
-    // req.flash('success', 'Login successful!');
+    req.flash('success', 'Login successful!');
     res.redirect('/dashboard');
 };
 
@@ -124,6 +124,8 @@ const showDashboard = (req, res) => {
     addLoginSpecificStyles(res);
     // TODO: Render the dashboard view (forms/login/dashboard)
     // TODO: Pass title, user, and sessionData to template
+    console.log("SESSION USER:", req.session.user);
+
     res.render('forms/login/dashboard', {
         title: 'User Dashboard',
         user,

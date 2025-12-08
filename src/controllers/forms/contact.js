@@ -1,25 +1,15 @@
-import { body, validationResult } from 'express-validator';
+import { validationResult } from 'express-validator';
 import { saveContactForm, getAllContactForms } from '../../models/forms/contact.js';
 
-/**
- * Validation rules for contact form submission
- */
-const contactValidation = [
-    body('subject')
-        .trim()
-        .isLength({ min: 2 })
-        .withMessage('Subject must be at least 2 characters long'),
-
-    body('message')
-        .trim()
-        .isLength({ min: 10 })
-        .withMessage('Message must be at least 10 characters long')
-];
+const addContactSpecificStyles = (res) => {
+    res.addStyle('<link rel="stylesheet" href="/css/contact.css">');
+}
 
 /**
  * Display the contact form
  */
 const showContactForm = (req, res) => {
+    addContactSpecificStyles(res);
     res.render('forms/contact/form', {
         title: 'Contact Us'
     });
@@ -43,10 +33,12 @@ const processContactForm = async (req, res) => {
     const savedForm = await saveContactForm(subject, message);
 
     if (!savedForm) {
+        req.flash('error', 'Failed to save contact form.');
         console.log('Failed to save contact form.');
         return res.redirect('/contact');
     }
 
+    req.flash('success', 'Contact form submitted successfully!');
     console.log('Contact form saved:', savedForm);
     res.redirect('/contact');
 };
@@ -55,6 +47,7 @@ const processContactForm = async (req, res) => {
  * Display all contact form submissions
  */
 const showContactResponses = async (req, res) => {
+    addContactSpecificStyles(res);
     const contactForms = await getAllContactForms();
 
     res.render('forms/contact/responses', {
@@ -63,4 +56,4 @@ const showContactResponses = async (req, res) => {
     });
 };
 
-export { showContactForm, processContactForm, showContactResponses, contactValidation };
+export { showContactForm, processContactForm, showContactResponses };
