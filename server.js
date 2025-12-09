@@ -60,6 +60,9 @@ Global Middleware
 app.use(flash);
 app.use(globalMiddleware);
 
+// Serve uploaded files statically
+app.use('/uploads', express.static('uploads'));
+
 /* 
 Routes
  */

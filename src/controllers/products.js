@@ -1,4 +1,5 @@
 import { getAllProducts, getSortedFilteredProducts } from "../models/products/products.js";
+// import { getAllProducts } from "../models/forms/newProduct.js";
 
 const addProductSpecificStyles = (res) => {
     res.addStyle('<link rel="stylesheet" href="/css/products.css">');

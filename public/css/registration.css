@@ -30,7 +30,7 @@
 
             &:focus {
                 outline: none;
-                border-color: #2c5aa0;
+                border-color: #6b0e19;
                 box-shadow: 0 0 5px rgba(44, 90, 160, 0.3);
             }
 
@@ -51,7 +51,7 @@
     }
 
     button {
-        background-color: #2c5aa0;
+        background-color: #6b0e19;
         color: white;
         padding: 0.75rem 2rem;
         border: none;
@@ -104,7 +104,7 @@
             margin-bottom: 1rem;
 
             .user-name {
-                color: #2c5aa0;
+                color: #6b0e19;
                 font-size: 1.2rem;
                 font-weight: 500;
                 margin: 0;

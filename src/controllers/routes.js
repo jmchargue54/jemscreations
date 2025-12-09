@@ -1,6 +1,9 @@
 import { Router } from 'express';
 const router = Router();
 
+import upload from '../middleware/upload.js';
+import { newProductValidation } from '../middleware/validation/newProduct.js';
+
 import { 
     homePage 
     } from './home.js';
@@ -17,8 +20,10 @@ import {
     showContactResponses,  
     } from './forms/contact.js';
 import { 
-    createProductPage 
-    } from './forms/createProduct.js';
+    showNewProductForm,
+    processNewProductForm,
+    showAllNewProducts
+    } from './forms/newProduct.js';
 import { 
     showRegistrationForm, 
     processRegistration, 
@@ -56,7 +61,9 @@ router.get('/products', productsPage);
 router.get('/products/:id', productDetailPage);
 
 // create product
-router.get('/createProduct', createProductPage);
+router.get('/createProduct', showNewProductForm);
+router.post('/createProduct', upload.single("image"), newProductValidation ,showAllNewProducts);
+router.get('/createProduct/list', showAllNewProducts);
 
 // User registration routes
 router.get('/register', showRegistrationForm);
