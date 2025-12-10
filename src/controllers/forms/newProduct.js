@@ -20,16 +20,18 @@ const showNewProductForm = (req, res) => {
  * Process new product form submission
  */
 const processNewProductForm = async (req, res) => {
+    console.log("processNewProductForm called");
     // Validate input
     const results = validationResult(req);
-
+    
     if (!results.isEmpty()) {
         console.log("Validation errors:", results.array());
-        return res.redirect("/new-product");
+        return res.redirect("/createProduct");
     }
 
     const { name, description, price, tag } = req.body;
-    const imageFilename = req.file ? req.file.filename : null;
+    console.log('file: ', req.file);
+    const imageFilename = req.file ? `/uploads/${req.file.filename}` : null;
 
     // Save to DB
     const savedProductForm = await saveNewProduct(
@@ -43,12 +45,12 @@ const processNewProductForm = async (req, res) => {
     if (!savedProductForm) {
         req.flash("error", "Failed to save new product.");
         console.log("Failed to save new product.");
-        return res.redirect("/new-product");
+        return res.redirect("/createProduct/list");
     }
 
     req.flash("success", "New product added successfully!");
     console.log("New product saved:", savedProductForm);
-    res.redirect("/new-product");
+    res.redirect("/createProduct/list");
 };
 
 /**
@@ -59,7 +61,9 @@ const showAllNewProducts = async (req, res) => {
     // const productForms = await getAllProductForms();
     const sortBy = req.query.sortBy || 'default';
     let tags = req.query.tag;
-    const products = await getSortedFilteredProducts(getAllProductForms(), sortBy, tags);
+    
+    const productsArray = await getAllProductForms();
+    const products = await getSortedFilteredProducts(productsArray, sortBy, tags);
 
 
     res.render("forms/newProduct/list", {

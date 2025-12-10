@@ -62,7 +62,7 @@ router.get('/products/:id', productDetailPage);
 
 // create product
 router.get('/createProduct', showNewProductForm);
-router.post('/createProduct', upload.single("image"), newProductValidation ,showAllNewProducts);
+router.post('/createProduct/list', upload.single("image"), newProductValidation, processNewProductForm);
 router.get('/createProduct/list', showAllNewProducts);
 
 // User registration routes
