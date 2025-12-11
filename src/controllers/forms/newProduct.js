@@ -67,7 +67,10 @@ const processNewProductForm = async (req, res) => {
 const showAllNewProducts = async (req, res) => {
     addNewProductSpecificStyles(res);
     const sortBy = req.query.sortBy || 'default';
-    let tags = req.query.tag;
+    let tags = req.query.tag || [];
+    if (!Array.isArray(tags)) {
+        tags = [tags];
+    }
     
     const productsArray = await getAllProductForms();
     const products = await getSortedFilteredProducts(productsArray, sortBy, tags);

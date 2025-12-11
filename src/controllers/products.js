@@ -8,7 +8,11 @@ const addProductSpecificStyles = (res) => {
 const productsPage = async (req, res) => {
     addProductSpecificStyles(res);
     const sortBy = req.query.sortBy || 'default';
-    let tags = req.query.tag;
+    let tags = req.query.tag || [];
+
+    if (!Array.isArray(tags)) {
+        tags = [tags];
+    }
 
     const productsArray = await getAvailableProducts();
     const products = await getSortedFilteredProducts(productsArray, sortBy, tags);

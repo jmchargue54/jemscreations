@@ -1,4 +1,24 @@
 <%- include('../partials/header') %>
+<%
+    function toggleTag(tag) {
+        let newTags = [...currentTags];
+
+        if (newTags.includes(tag)) {
+            newTags = newTags.filter(t => t !== tag);
+        } else {
+            newTags.push(tag);
+        }
+
+        let qs = newTags.map(t => "tag=" + t).join("&");
+
+        if (currentSort && currentSort !== 'default') {
+            qs += (qs ? "&" : "") + "sortBy=" + currentSort;
+        }
+
+        return "/products" + (qs ? "?" + qs : "");
+    }
+%>
+
 <div class="productList">
     <h1><%= title %></h1>
     <div class="sort-options">
@@ -7,42 +27,36 @@
         <a href="/products?sortBy=priceDesc" class="<% currentSort === 'priceDesc' ? 'active' : '' %>">Price Descending</a>
         <a href="/products?sortBy=nameAsc" class="<% currentSort === 'nameAsc' ? 'active' : '' %>">Name Ascending</a>
         <a href="/products?sortBy=nameDesc" class="<% currentSort === 'nameDesc' ? 'active' : '' %>">Name Descending</a>
+        <a href="/products" class="<% currentSort === 'default' ? 'active' : '' %>">Default</a>
     </div>
     <div class="filter-options">
         <span>Filter by:</span>
-        <form method="GET" action="/products" class="filter-form">
-            <label>
-                <input type="checkbox" name="tag" value="necklace"
-                <%= currentTags.includes('necklace') ? 'checked' : '' %> >
+        <div class="filter-buttons">
+            <a href="<%= toggleTag('necklace') %>" 
+            class="filterBtn <%= currentTags.includes('necklace') ? 'active' : '' %>">
                 Necklaces
-            </label>
+            </a>
 
-            <label>
-                <input type="checkbox" name="tag" value="earrings"
-                <%= currentTags.includes('earrings') ? 'checked' : '' %> >
+            <a href="<%= toggleTag('earrings') %>" 
+            class="filterBtn <%= currentTags.includes('earrings') ? 'active' : '' %>">
                 Earrings
-            </label>
+            </a>
 
-            <label>
-                <input type="checkbox" name="tag" value="bracelet"
-                <%= currentTags.includes('bracelet') ? 'checked' : '' %> >
+            <a href="<%= toggleTag('bracelet') %>" 
+            class="filterBtn <%= currentTags.includes('bracelet') ? 'active' : '' %>">
                 Bracelets
-            </label>
+            </a>
 
-            <label>
-                <input type="checkbox" name="tag" value="ring"
-                <%= currentTags.includes('ring') ? 'checked' : '' %> >
+            <a href="<%= toggleTag('ring') %>" 
+            class="filterBtn <%= currentTags.includes('ring') ? 'active' : '' %>">
                 Rings
-            </label>
+            </a>
 
-            <label>
-                <input type="checkbox" name="tag" value="other"
-                <%= currentTags.includes('other') ? 'checked' : '' %> >
+            <a href="<%= toggleTag('other') %>" 
+            class="filterBtn <%= currentTags.includes('other') ? 'active' : '' %>">
                 Other
-            </label>
-
-            <button type="submit">Apply Filters</button>
-        </form>
+            </a>
+        </div>
     </div>
     <div class="productsContainer">
         <% products.forEach(product => { %>
