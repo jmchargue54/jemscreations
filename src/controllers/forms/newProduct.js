@@ -1,5 +1,11 @@
 import { validationResult } from "express-validator";
-import { saveNewProduct, getAllProductForms } from "../../models/forms/newProduct.js";
+import { 
+    saveNewProduct, 
+    getAllProductForms,
+    getProductById,
+    updateProduct,
+    deleteProduct 
+    } from "../../models/forms/newProduct.js";
 import { getSortedFilteredProducts } from "../../models/products/products.js";
 
 const addNewProductSpecificStyles = (res) => {
@@ -74,5 +80,129 @@ const showAllNewProducts = async (req, res) => {
     });
 }
 
-export { showNewProductForm, processNewProductForm, showAllNewProducts };
+const showEditProductForm = async (req, res) => {
+    addNewProductSpecificStyles(res);
+    const productId = parseInt(req.params.id);
+    const currentUser = req.session.user;
+
+    // Retrieve the product to edit
+    const product = await getProductById(productId);
+
+    // Check if the product exists
+    if (!product) {
+        req.flash('error', 'Product not found');
+        console.log(`Product with ID ${productId} not found for editing`);
+        return res.redirect('/createProduct/list');
+    }
+
+    // Only admins can edit products
+    if (currentUser.role_name !== 'admin') {
+        req.flash('error', 'Unauthorized to edit product');
+        console.log(`Unauthorized edit attempt by user ID ${currentUser.id} on product ID ${productId}`);
+        return res.redirect('/createProduct/list');
+    }
+
+    res.render(`forms/newProduct/edit`, {
+        title: 'Edit Product',
+        product
+    });
+};
+
+const processEditProduct = async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        console.log('Validation errors:', errors.array());
+        return res.redirect(`/createProduct/list/${req.params.id}/edit`);
+    }
+
+    const productId = parseInt(req.params.id);
+    const currentUser = req.session.user;
+    const product = await getProductById(productId);
+
+    // Ensure product exists
+    if (!product) {
+        req.flash('error', 'Product not found');
+        return res.redirect('/createProduct/list');
+    }
+
+    // Only admins can edit products
+    if (currentUser.role_name !== 'admin') {
+        req.flash('error', 'Unauthorized to edit product');
+        return res.redirect('/createProduct/list');
+    }
+
+    // Extract updated fields
+    const { name, description, price, tag } = req.body;
+            
+    // if new image was uploaded; otherwise keep the old one
+    // let image;
+    // if (req.file) {
+    //     image = `/uploads/${req.file.filename}`;
+    // } else {
+    //     image = product.image;
+    // }
+    const image = req.file
+        ? `/uploads/${req.file.filename}`
+        : product.image;
+    
+    // Update the product
+    const updatedProduct = await updateProduct(productId, {
+        image,
+        name,
+        description,
+        price,
+        tag
+    });
+
+    if (!updatedProduct) {
+        req.flash('error', 'Failed to update product');
+        return res.redirect(`/createProduct/list/${productId}/edit`);
+    }
+
+    req.flash('success', 'Product updated successfully');;
+    res.redirect('/createProduct/list');
+};
+
+const processDeleteProduct = async (req, res) => {
+    const productId = parseInt(req.params.id);
+    const currentUser = req.session.user;
+
+    // Only admins can delete products
+    if (currentUser.role_name !== 'admin') {
+        req.flash('error', 'Unauthorized to delete product');
+        console.log(`Unauthorized delete attempt by user ID ${currentUser.id} on product ID ${productId}`);
+        return res.redirect('/createProduct/list');
+    }
+
+    // Extract product to delete
+    const product = await getProductById(productId);
+    if (!product) {
+        req.flash('error', 'Product not found');
+        console.log(`Product with ID ${productId} not found for deletion`);
+        return res.redirect('/createProduct/list');
+    }
+
+    // Delete the product
+    const deleted = await deleteProduct(productId);
+
+    if (!deleted) {
+        req.flash('error', 'Failed to delete product');
+        console.log(`Failed to delete product ID ${productId}`);
+        return res.redirect('/createProduct/list');
+    }
+
+    req.flash('success', 'Product deleted successfully');;
+    console.log(`Product ID ${productId} deleted successfully`);
+    res.redirect('/createProduct/list');
+};
+
+export { 
+    showNewProductForm, 
+    processNewProductForm, 
+    showAllNewProducts, 
+    showEditProductForm, 
+    processEditProduct, 
+    processDeleteProduct 
+};
 

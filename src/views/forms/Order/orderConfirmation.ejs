@@ -1,0 +1,56 @@
+<%- include('../../partials/header') %>
+
+<h1>Order Confirmation</h1>
+
+<p>Thank you! Your order <strong>#<%= order.id %></strong> has been received.</p>
+
+<p>Please look over your order to ensure all details are correct. Contact us if you find any issues.</p>
+<p><strong>You will not be able to access this page again!</strong> <br> Take a screenshot if you want this information for your records.</p>
+
+<h2>Your Information</h2>
+<p><strong>Name:</strong> <%= order.first_name %> <%= order.last_name %></p>
+<p><strong>Email:</strong> <%= order.email %></p>
+<p><strong>Phone:</strong> <%= order.phone %></p>
+<p><strong>Address:</strong>
+  <%= order.address %>, 
+  <%= order.city %>, 
+  <%= order.state %> 
+  <%= order.zip %>, 
+  <%= order.country %>
+</p>
+<p><strong>Venmo Confirmed:</strong> <%= order.venmo_confirmed ? "Yes" : "No" %></p>
+
+<hr>
+
+<h2>Items in Your Order</h2>
+
+<% if (items && items.length > 0) { %>
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <% if (items.quantity > 0) { %>
+        <th>Line</th>
+        <% } %>
+      </tr>
+    </thead>
+    <tbody>
+      <% items.forEach(it => { %>
+        <tr>
+          <td><%= it.name %></td>
+          <td><%= it.quantity %></td>
+          <td>$<%= it.price_each %></td>
+          <% if (it.quantity > 1) { %>
+          <td>$<%= it.line_total %></td>
+          <% } %>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <p><strong>Total:</strong> $<%= total %></p>
+<% } %>
+
+<%- include('../../partials/footer') %>

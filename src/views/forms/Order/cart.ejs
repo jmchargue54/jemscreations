@@ -1,0 +1,57 @@
+<%- include('../../partials/header') %>
+
+<h1><%= title %></h1>
+
+<div class="cartItems">
+  <% if (!cartItems || cartItems.length === 0) { %>
+    <p>Your cart is currently empty.</p>
+  <% } else { %>
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Line total</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% cartItems.forEach(function(item) { %>
+          <tr>
+            <td>
+              <img src="<%= item.image %>" alt="<%= item.name %>" width="64" />
+              <span><%= item.name %></span>
+            </td>
+            <td>$<%= parseFloat(item.price).toFixed(2) %></td>
+            <td>
+              <form action="/cart/update" method="POST" style="display:inline-block;">
+                <input type="hidden" name="cartItemId" value="<%= item.id %>">
+                <input type="number" name="quantity" value="<%= item.quantity %>" min="0" style="width:60px;">
+                <button type="submit">Update</button>
+              </form>
+            </td>
+            <td>$<%= (parseFloat(item.price) * item.quantity).toFixed(2) %></td>
+            <td>
+              <form action="/cart/remove" method="POST" style="display:inline-block;">
+                <input type="hidden" name="cartItemId" value="<%= item.id %>">
+                <button type="submit">Remove</button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <div class="cart-summary">
+      <p>Subtotal: $<%= subtotal %></p>
+
+      <form action="/checkout" method="POST">
+        <button type="submit">Proceed to Checkout</button>
+      </form>
+    </div>
+  <% } %>
+</div>
+<div>
+  
+<%- include('../../partials/footer') %>

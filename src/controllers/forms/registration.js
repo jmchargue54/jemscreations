@@ -7,7 +7,7 @@ import {
     updateUser,
     deleteUser
 } from '../../models/forms/registration.js';
-import session from 'express-session';
+// import session from 'express-session';
 
 
 const addRegistrationStyles = (res) => {

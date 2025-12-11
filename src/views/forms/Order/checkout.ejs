@@ -1,0 +1,66 @@
+<%- include('../../partials/header') %>
+
+<h1><%= title %></h1>
+
+<% if (!items || items.length === 0) { %>
+  <p>No items to checkout.</p>
+<% } else { %>
+  <table>
+    <thead>
+      <tr><th>Product</th><th>Qty</th><th>Price</th><th>Line</th></tr>
+    </thead>
+    <tbody>
+      <% items.forEach(it => { %>
+        <tr>
+          <td><%= it.name %></td>
+          <td><%= it.quantity %></td>
+          <td>$<%= it.price.toFixed(2) %></td>
+          <td>$<%= it.line_total.toFixed(2) %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <p>Subtotal: $<%= subtotal %></p>
+
+<form action="/checkout" method="POST">
+
+    <h2>Your Information</h2>
+
+    <label>First Name</label>
+    <input type="text" name="first_name" placeholder="First" required>
+
+    <label>Last Name</label>
+    <input type="text" name="last_name" placeholder="Last" required>
+
+    <label>Email</label>
+    <input type="email" name="email" placeholder="yourname@email.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+
+    <label>Phone</label>
+    <input type="tel" name="phone" placeholder="(123)456-7890"  required>
+
+    <label>Street Address</label>
+    <input type="text" name="address" placeholder="123 Main St" required>
+
+    <label>City</label>
+    <input type="text" name="city" placeholder="City" required>
+
+    <label>State</label>
+    <input type="text" name="state" placeholder="State" required>
+
+    <label>ZIP Code</label>
+    <input type="text" name="zip" placeholder="12345" pattern="[0-9]{5}" required>
+
+    <label>Country</label>
+    <input type="text" name="country" placeholder="Country" required>
+
+    <label>
+        <input type="checkbox" name="venmo_confirmed" required>
+        I confirm I sent the money via Venmo to <a href="https://venmo.com/u/Lacey-McHargue">@Lacey-McHargue</a>.
+    </label>
+
+    <button type="submit">Place Order</button>
+</form>
+<% } %>
+
+<%- include('../../partials/footer') %>

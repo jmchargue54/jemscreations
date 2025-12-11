@@ -1,0 +1,70 @@
+<%- include('../../partials/header') %>
+
+<h1><%= title %></h1>
+
+<% if (orders.length === 0) { %>
+    <p>You have no orders yet.</p>
+<% } else { %>
+
+    <h2>Pending Orders</h2>
+    <% 
+        const pending = orders.filter(o => o.status === 'pending');
+        const past = orders.filter(o => o.status !== 'pending');
+    %>
+
+    <% if (pending.length === 0) { %>
+        <p>No pending orders.</p>
+    <% } else { %>
+        <table cellpadding="8">
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Placed On</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% pending.forEach(order => { %>
+                    <tr>
+                        <td><%= order.id %></td>
+                        <td>$<%= order.total %></td>
+                        <td><%= order.status %></td>
+                        <td><%= order.created_at.toLocaleString() %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } %>
+
+
+    <h2>Past Orders</h2>
+
+    <% if (past.length === 0) { %>
+        <p>No past orders.</p>
+    <% } else { %>
+        <table cellpadding="8">
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Placed On</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% past.forEach(order => { %>
+                    <tr>
+                        <td><%= order.id %></td>
+                        <td>$<%= order.total %></td>
+                        <td><%= order.status %></td>
+                        <td><%= order.created_at.toLocaleString() %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } %>
+
+<% } %>
+
+<%- include('../../partials/footer') %>

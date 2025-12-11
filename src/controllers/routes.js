@@ -12,17 +12,17 @@ import {
     productDetailPage 
     } from './products.js';
 import { 
-    cartPage 
-    } from './userPages/cart.js';
-import { 
     showContactForm, 
     processContactForm, 
-    showContactResponses,  
+    showContactResponses, 
     } from './forms/contact.js';
 import { 
     showNewProductForm,
     processNewProductForm,
-    showAllNewProducts
+    showAllNewProducts,
+    showEditProductForm,
+    processEditProduct,
+    processDeleteProduct
     } from './forms/newProduct.js';
 import { 
     showRegistrationForm, 
@@ -52,6 +52,20 @@ import {
 import { 
     loginValidation 
     } from '../middleware/validation/login.js';
+import {
+    viewCart,
+    handleAddToCart,
+    handleUpdateCart,
+    handleRemoveFromCart
+    } from './userPages/cart.js';
+import {
+    showCheckout,
+    handleProcessOrder,
+    showOrderConfirmation,
+    showMyOrders,
+    handleShowAllOrders,
+    completeOrder
+    } from './forms/order.js';
 
 // home and about page
 router.get('/', homePage);
@@ -64,6 +78,11 @@ router.get('/products/:id', productDetailPage);
 router.get('/createProduct', showNewProductForm);
 router.post('/createProduct/list', upload.single("image"), newProductValidation, processNewProductForm);
 router.get('/createProduct/list', showAllNewProducts);
+
+// manage product
+router.get('/createProduct/list/:id/edit', showEditProductForm);
+router.post('/createProduct/list/:id/edit', upload.single("image"), newProductValidation, processEditProduct);
+router.post('/createProduct/list/:id/delete', processDeleteProduct);
 
 // User registration routes
 router.get('/register', showRegistrationForm);
@@ -88,7 +107,18 @@ router.get('/contact', showContactForm);
 router.post('/contact', contactValidation, processContactForm);
 router.get('/contact/responses', showContactResponses);
 
-// shopping cart
-router.get('/cart', requireLogin, cartPage);
+// cart
+router.get('/cart', requireLogin, viewCart);
+router.post('/cart/add', requireLogin, handleAddToCart);
+router.post('/cart/update', requireLogin, handleUpdateCart);
+router.post('/cart/remove', requireLogin, handleRemoveFromCart);
+
+// order and checkout
+router.get('/checkout', requireLogin, showCheckout);
+router.post('/checkout', requireLogin, handleProcessOrder);
+router.get('/orderConfirmation/:id', requireLogin, showOrderConfirmation);
+router.get('/order/myOrders', requireLogin, showMyOrders);
+router.get('/order/list', requireRole('admin'), handleShowAllOrders);
+router.post('/order/list/:id/complete', requireRole('admin'), completeOrder);
 
 export default router;

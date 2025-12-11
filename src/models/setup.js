@@ -267,7 +267,7 @@ const insertFaculty = async(facultyMember, verbose = true) => {
     const result = await db.query(query, values);
 
     if (result.rows.length > 0 && verbose) {
-        console.log(`Created/Updated faculty member: ${result.rows[0].first_name} ${result.rows[0].last_name}`);
+        console.log(`Created/Updated faculty member: ${result.rows[0].firstName} ${result.rows[0].lastName}`);
     }
 
     return result.rows[0];
@@ -275,7 +275,7 @@ const insertFaculty = async(facultyMember, verbose = true) => {
 
 // Check if all four tables are present in the current schema
 const allTablesExist = async() => {
-    const tables = ['departments', 'catalog', 'courses', 'faculty'];
+    const tables = ['departments', 'catalog', 'courses', 'faculty', 'orders'];
     const res = await db.query(
         `
         SELECT table_name

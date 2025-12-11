@@ -20,7 +20,9 @@ const createCartItemsTableIfNotExists = `
         id SERIAL PRIMARY KEY,
         user_id INTEGER NOT NULL REFERENCES users(id),
         product_id INTEGER NOT NULL REFERENCES products(id),
-        quantity INTEGER DEFAULT 1
+        quantity INTEGER DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 `;
 
@@ -29,6 +31,18 @@ const createOrdersTableIfNotExists = `
     CREATE TABLE IF NOT EXISTS orders (
         id SERIAL PRIMARY KEY,
         user_id INTEGER NOT NULL REFERENCES users(id),
+
+        first_name VARCHAR(100) NOT NULL,
+        last_name VARCHAR(100) NOT NULL,
+        email VARCHAR(150) NOT NULL,
+        phone VARCHAR(20),
+        address VARCHAR(300) NOT NULL,
+        city VARCHAR(100) NOT NULL,
+        state VARCHAR(100) NOT NULL,
+        zip VARCHAR(20) NOT NULL,
+        country VARCHAR(100) NOT NULL,
+        venmo_confirmed BOOLEAN DEFAULT FALSE,
+
         total DECIMAL(10, 2) NOT NULL,
         status VARCHAR(50) DEFAULT 'pending',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -43,7 +57,8 @@ const createOrderItemsTableIfNotExists = `
         order_id INTEGER NOT NULL REFERENCES orders(id),
         product_id INTEGER NOT NULL REFERENCES products(id),
         quantity INTEGER NOT NULL DEFAULT 1,
-        price_each DECIMAL(10, 2) NOT NULL
+        price_each DECIMAL(10, 2) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 `;
 

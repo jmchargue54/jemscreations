@@ -8,7 +8,11 @@
                 <h2><%= product.name %></h2>
                 <p><%= product.description %></p>
                 <p class="price">$<%= product.price %></p>
-                <button class="addToCartBtn" data-product-id="<%= product.id %>">Add to Cart</button>
+                <form action="/cart/add" method="POST">
+                    <input type="hidden" name="productId" value="<%= product.id %>">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="addToCartBtn">Add to Cart</button>
+                </form>
             </div>
         </div>
     </div>

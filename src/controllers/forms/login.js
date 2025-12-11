@@ -56,6 +56,7 @@ const processLogin = async (req, res) => {
     delete user.password;
     // TODO: Store user information in session: req.session.user = user object (without password)
     req.session.user = user;
+    req.session.userId = user.id;
 
     // TODO: Redirect to protected dashboard (/dashboard)
     req.flash('success', 'Login successful!');

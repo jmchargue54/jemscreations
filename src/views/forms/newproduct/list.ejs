@@ -50,10 +50,19 @@
             <% products.forEach(product => { %>
                 <div class="productItem">
                     <img src="<%= product.image %>" alt="<%= product.name %>">
-                    <h2><a href="/products/<%= product.id %>"><%= product.name %></a></h2>
+                    <h2><%= product.name %></h2>
                     <p><%= product.description %></p>
                     <p class="price">$<%= product.price %></p>
-                    <!-- <button class="addToCartBtn" data-product-id="<%= product.id %>">Add to Cart</button> -->
+                    <% if (user && user.role_name === 'admin') { %>
+                        <div class="productActions">
+                            <a href="/createproduct/list/<%= product.id %>/edit">Edit</a>
+                            <form method="POST" action="/createproduct/list/<%= product.id %>/delete" style="display: inline;">
+                                <button type="submit" onclick="return confirm('Delete this product?')">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    <% } %>
                 </div>
             <% }) %>
         </div>
