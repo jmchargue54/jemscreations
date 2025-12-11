@@ -63,7 +63,7 @@ const processRegistration = async (req, res) => {
     // TODO: If successful, log success and redirect (maybe to users list?)
     req.flash('success', `User registered successfully: ${email}`);
     console.log(`User registered successfully: ${email}`);
-    return res.redirect('/users');
+    return res.redirect('/login');
 };
     
 

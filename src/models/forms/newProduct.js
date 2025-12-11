@@ -1,10 +1,10 @@
 import db from '../db.js';
 
-const saveNewProduct = async (imageFilename, name, description, price, tag) => {
+const saveNewProduct = async (imageFilename, name, description, price, tag, availability, soldAt) => {
     const query = `
-        INSERT INTO products (image, name, description, price, tag)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING id, image, name, description, price, tag, created_at, updated_at
+        INSERT INTO products (image, name, description, price, tag, availability, sold_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id, image, name, description, price, tag, availability, sold_at, created_at, updated_at
     `;
 
     try {
@@ -13,7 +13,9 @@ const saveNewProduct = async (imageFilename, name, description, price, tag) => {
             name,
             description,
             price,
-            tag
+            tag,
+            availability,
+            soldAt
         ]);
         return result.rows[0] || null;
     } catch (error) {
@@ -32,7 +34,6 @@ const getAllProductForms = async () => {
     const result = await db.query(query);
     return result.rows;
 };
-
 
 // Retrieve a single product by ID
 const getProductById = async (id) => {
@@ -57,6 +58,16 @@ const getProductById = async (id) => {
         console.error("DB Error in getProductById:", error);
         return null;
     }
+};
+
+const getAvailableProducts = async () => {
+    const query = `
+        SELECT id, image, name, description, price, tag, created_at, updated_at
+        FROM products
+        WHERE availability = 'in stock'
+    `;
+    const result = await db.query(query);
+    return result.rows;
 };
 
 // update a product by ID
@@ -85,6 +96,26 @@ const updateProduct = async (id, { image, name, description, price, tag }) => {
     }
 };
 
+const markProductAsSold = async (id) => {
+    try {
+        const query = `
+            UPDATE products
+            SET
+                availability = 'sold',
+                sold_at = CURRENT_TIMESTAMP,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = $1
+            RETURNING *
+        `;
+        const result = await db.query(query, [id]);
+
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error("DB Error in markProductAsSold:", error);
+        return null;
+    }
+};
+
 // delete a product by ID
 const deleteProduct = async (id) => {
     try {
@@ -98,10 +129,26 @@ const deleteProduct = async (id) => {
     }
 };
 
+const productCheck = async (id) => {
+    try {
+        const query = `
+            SELECT availability FROM products WHERE id = $1
+        `;
+        const result = await db.query(query, [id]);
+        return result.rows.length > 0;
+    } catch (error) {
+        console.error("DB Error in productCheck:", error);
+        return false;
+    }
+};
+
 export { 
     saveNewProduct, 
     getAllProductForms, 
     getProductById, 
+    getAvailableProducts,
     updateProduct, 
-    deleteProduct
+    markProductAsSold,
+    deleteProduct,
+    productCheck
 };

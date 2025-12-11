@@ -1,7 +1,6 @@
 import {
     addToCart,
     getCartItemsByUser,
-    updateCartItemQuantity,
     removeCartItem
     } from '../../models/forms/order.js';
 
@@ -14,7 +13,7 @@ const viewCart = async (req, res) => {
     // calculate totals
     let subtotal = 0;
     cartItems.forEach(ci => {
-        subtotal += parseFloat(ci.price) * ci.quantity;
+        subtotal += parseFloat(ci.price);
     });
 
     res.render('forms/order/cart', {
@@ -32,29 +31,15 @@ const handleAddToCart = async (req, res) => {
     //     return res.status(401).json({ error: 'Not authenticated' });
     // }
 
-    const { productId, quantity } = req.body;
-    const qty = parseInt(quantity, 10) || 1;
+    const { productId } = req.body;
 
-    const added = await addToCart(userId, productId, qty);
+    const added = await addToCart(userId, productId);
     if (!added) {
         return res.status(500).json({ error: 'Failed to add to cart' });
     }
-
+    req.flash('success', 'Item added to cart successfully <a href="/cart">View Cart</a>');
     // If this was a fetch/ajax call you might return JSON; here we'll redirect back
-    res.redirect('/cart');
-};
-
-// update item quantity in cart
-const handleUpdateCart = async (req, res) => {
-    const { cartItemId, quantity } = req.body;
-    const qty = parseInt(quantity, 10);
-
-    const updated = await updateCartItemQuantity(cartItemId, qty);
-    if (!updated) {
-        // if update failed, redirect with error (you can flash a message)
-        return res.redirect('/cart');
-    }
-    res.redirect('/cart');
+    res.redirect('/products');
 };
 
 // remove item from cart
@@ -68,6 +53,5 @@ const handleRemoveFromCart = async (req, res) => {
 export {
     viewCart,
     handleAddToCart,
-    handleUpdateCart,
     handleRemoveFromCart
 };

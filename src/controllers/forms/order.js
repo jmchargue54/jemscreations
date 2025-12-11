@@ -3,7 +3,8 @@ import {
     processOrder,
     getOrderById,
     getOrdersByUser, 
-    showAllOrders 
+    showAllOrders,
+    completeOrder 
     } from '../../models/forms/order.js';
 import db from '../../models/db.js';
 
@@ -20,10 +21,9 @@ const showCheckout = async (req, res) => {
             product_id: ci.product_id,
             name: ci.name,
             image: ci.image,
-            quantity: ci.quantity,
             price: parseFloat(ci.price)
         };
-        line.line_total = line.price * line.quantity;
+        line.line_total = line.price;
         subtotal += line.line_total;
         return line;
     });
@@ -64,11 +64,10 @@ const handleProcessOrder = async (req, res) => {
 
     const orderItems = cartItems.map(ci => ({
         product_id: ci.product_id,
-        quantity: ci.quantity,
         price_each: parseFloat(ci.price)
     }));
 
-    const total = orderItems.reduce((acc, it) => acc + it.quantity * it.price_each, 0);
+    const total = orderItems.reduce((acc, it) => acc + it.price_each, 0);
 
     const result = await processOrder(userId, cartInfo, orderItems, total, 'pending');
     if (!result) {
@@ -134,14 +133,10 @@ const handleShowAllOrders = async (req, res) => {
     }
 };
 
-const completeOrder = async (req, res) => {
-    const orderId = req.params.id;
-
+const processCompleteOrder = async (req, res) => {
     try {
-        await db.query(
-            `UPDATE orders SET status = 'completed', updated_at = NOW() WHERE id = $1`,
-            [orderId]
-        );
+        const orderId = req.params.id;
+        await completeOrder(orderId);
 
         // Redirect back to the admin orders list
         return res.redirect("/order/list");
@@ -158,5 +153,5 @@ export {
     showOrderConfirmation,
     showMyOrders,
     handleShowAllOrders,
-    completeOrder
+    processCompleteOrder
 };

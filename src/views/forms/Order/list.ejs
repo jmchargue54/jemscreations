@@ -3,6 +3,72 @@
 <div class="container">
     <h1>All Orders</h1>
 
+    <% 
+        const pending = orders.filter(o => o.status === 'pending');
+        const past = orders.filter(o => o.status !== 'pending');
+    %>
+
+    <h2>Current Orders</h2>
+    <% if (pending.length === 0) { %>
+        <p>No pending orders.</p>
+    <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Items</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <% pending.forEach(order => { %>
+                    <tr>
+                        <td><%= order.id %></td>
+                        <td><%= order.created_at.toDateString() %></td>
+                        
+                        <td><%= order.first_name %> <%= order.last_name %></td>
+                        <td><%= order.email %></td>
+                        
+                        <td>
+                            <%= order.address %><br>
+                            <%= order.city %>, <%= order.state %> <%= order.zip %><br>
+                            <%= order.country %>
+                        </td>
+
+                        <td>$<%= order.total %></td>
+                        <td><%= order.status %></td>
+
+                        <td>
+                            <ul>
+                            <% order.items.forEach(item => { %>
+                                <li><%= item.product_name %></li>
+                            <% }) %>
+                            </ul>
+                        </td>
+
+                        <td>
+                            <% if (order.status !== 'completed') { %>
+                                <form action="/order/list/<%= order.id %>/complete" method="POST">
+                                    <button type="submit" class="btn-complete">Mark as Completed</button>
+                                </form>
+                            <% } else { %>
+                                <span class="completed-label">Completed</span>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } %>
+
+        <h2>Completed Orders</h2>
     <table>
         <thead>
             <tr>
@@ -15,14 +81,15 @@
                 <th>Status</th>
                 <th>Items</th>
                 <th>Actions</th>
+                <th>Date Completed</th>
             </tr>
         </thead>
 
         <tbody>
-            <% orders.forEach(order => { %>
+            <% past.forEach(order => { %>
                 <tr>
                     <td><%= order.id %></td>
-                    <td><%= order.created_at %></td>
+                    <td><%= order.created_at.toDateString() %></td>
                     
                     <td><%= order.first_name %> <%= order.last_name %></td>
                     <td><%= order.email %></td>
@@ -39,7 +106,7 @@
                     <td>
                         <ul>
                         <% order.items.forEach(item => { %>
-                            <li><%= item.product_name %> (x<%= item.quantity %>)</li>
+                            <li><%= item.product_name %></li>
                         <% }) %>
                         </ul>
                     </td>
@@ -53,10 +120,12 @@
                             <span class="completed-label">Completed</span>
                         <% } %>
                     </td>
+                    <td><%= order.completed_at ? order.completed_at.toDateString() : '' %></td>
                 </tr>
             <% }) %>
         </tbody>
     </table>
+
 </div>
 
 <%- include('../../partials/footer') %>

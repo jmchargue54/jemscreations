@@ -275,7 +275,7 @@ const insertFaculty = async(facultyMember, verbose = true) => {
 
 // Check if all four tables are present in the current schema
 const allTablesExist = async() => {
-    const tables = ['departments', 'catalog', 'courses', 'faculty', 'orders'];
+    const tables = ['departments', 'catalog', 'courses', 'faculty', 'orders', 'cart-items'];
     const res = await db.query(
         `
         SELECT table_name

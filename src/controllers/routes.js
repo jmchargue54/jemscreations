@@ -55,7 +55,6 @@ import {
 import {
     viewCart,
     handleAddToCart,
-    handleUpdateCart,
     handleRemoveFromCart
     } from './userPages/cart.js';
 import {
@@ -64,7 +63,7 @@ import {
     showOrderConfirmation,
     showMyOrders,
     handleShowAllOrders,
-    completeOrder
+    processCompleteOrder
     } from './forms/order.js';
 
 // home and about page
@@ -110,7 +109,6 @@ router.get('/contact/responses', showContactResponses);
 // cart
 router.get('/cart', requireLogin, viewCart);
 router.post('/cart/add', requireLogin, handleAddToCart);
-router.post('/cart/update', requireLogin, handleUpdateCart);
 router.post('/cart/remove', requireLogin, handleRemoveFromCart);
 
 // order and checkout
@@ -119,6 +117,6 @@ router.post('/checkout', requireLogin, handleProcessOrder);
 router.get('/orderConfirmation/:id', requireLogin, showOrderConfirmation);
 router.get('/order/myOrders', requireLogin, showMyOrders);
 router.get('/order/list', requireRole('admin'), handleShowAllOrders);
-router.post('/order/list/:id/complete', requireRole('admin'), completeOrder);
+router.post('/order/list/:id/complete', requireRole('admin'), processCompleteOrder);
 
 export default router;

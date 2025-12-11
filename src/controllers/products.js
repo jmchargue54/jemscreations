@@ -1,5 +1,5 @@
 import { getSortedFilteredProducts } from "../models/products/products.js";
-import { getAllProductForms } from "../models/forms/newProduct.js";
+import { getAvailableProducts } from "../models/forms/newProduct.js";
 
 const addProductSpecificStyles = (res) => {
     res.addStyle('<link rel="stylesheet" href="/css/products.css">');
@@ -10,7 +10,7 @@ const productsPage = async (req, res) => {
     const sortBy = req.query.sortBy || 'default';
     let tags = req.query.tag;
 
-    const productsArray = await getAllProductForms();
+    const productsArray = await getAvailableProducts();
     const products = await getSortedFilteredProducts(productsArray, sortBy, tags);
     
     res.render('products/products', { 
@@ -23,7 +23,7 @@ const productsPage = async (req, res) => {
 
 const productDetailPage = async (req, res, next) => {
     const productId = parseInt(req.params.id);
-    const allProducts = await getAllProductForms();
+    const allProducts = await getAvailableProducts();
     const product = await allProducts.find(p => p.id === productId);
 
     if (!product) {
@@ -39,7 +39,7 @@ const productDetailPage = async (req, res, next) => {
     res.render('productDetail', { 
         title: product.name, 
         product: product,
-        products: getAllProductForms()
+        products: await getAvailableProducts()
     });
 };
 

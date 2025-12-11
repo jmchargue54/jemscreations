@@ -11,8 +11,6 @@
         <tr>
           <th>Product</th>
           <th>Price</th>
-          <th>Quantity</th>
-          <th>Line total</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -24,14 +22,6 @@
               <span><%= item.name %></span>
             </td>
             <td>$<%= parseFloat(item.price).toFixed(2) %></td>
-            <td>
-              <form action="/cart/update" method="POST" style="display:inline-block;">
-                <input type="hidden" name="cartItemId" value="<%= item.id %>">
-                <input type="number" name="quantity" value="<%= item.quantity %>" min="0" style="width:60px;">
-                <button type="submit">Update</button>
-              </form>
-            </td>
-            <td>$<%= (parseFloat(item.price) * item.quantity).toFixed(2) %></td>
             <td>
               <form action="/cart/remove" method="POST" style="display:inline-block;">
                 <input type="hidden" name="cartItemId" value="<%= item.id %>">

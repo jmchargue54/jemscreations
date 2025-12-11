@@ -26,10 +26,10 @@
 </head>
 <body>
     <header>
-        <div class="logoSection" title="Jems Creations Logo">
+        <div class="logoSection" title="Jems Creations Logo"><a href="/">
             <h1>Jems Creations</h1>
             <img src="/photos/Jems Logo Gem-resize.png" alt="Jems Creations Logo" class="logo">
-        </div>
+        </a></div>
 
         
         <nav class="mainMenu">
@@ -67,7 +67,7 @@
         <% if (messages[type].length > 0) { %>
             <div class="alert <%= type %>">
                 <% messages[type].forEach(msg => { %>
-                    <p><%= msg %></p>
+                    <p><%- msg %></p>
                 <% }); %>
             </div>
         <% } %>

@@ -7,13 +7,12 @@
 <% } else { %>
   <table>
     <thead>
-      <tr><th>Product</th><th>Qty</th><th>Price</th><th>Line</th></tr>
+      <tr><th>Product</th><th>Price</th><th>Line</th></tr>
     </thead>
     <tbody>
       <% items.forEach(it => { %>
         <tr>
           <td><%= it.name %></td>
-          <td><%= it.quantity %></td>
           <td>$<%= it.price.toFixed(2) %></td>
           <td>$<%= it.line_total.toFixed(2) %></td>
         </tr>

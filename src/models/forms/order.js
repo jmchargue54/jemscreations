@@ -1,35 +1,34 @@
 import db from '../db.js';
 
 // add to cart
-const addToCart = async (userId, productId, quantity = 1) => {
+const addToCart = async (userId, productId) => {
     try {
-        // Check for existing cart item
-        const checkQuery = `
-            SELECT id, quantity 
-            FROM cart_items
-            WHERE user_id = $1 AND product_id = $2
-        `;
-        const existing = await db.query(checkQuery, [userId, productId]);
+        // Ensure product is in stock
+        const checkProduct = await db.query(
+            `SELECT availability FROM products WHERE id = $1`, [productId]
+        );
 
-        if (existing.rows.length > 0) {
-            // Update quantity instead of inserting new row
-            const updateQuery = `
-                UPDATE cart_items 
-                SET quantity = quantity + $1
-                WHERE id = $2
-                RETURNING *
-            `;
-            const result = await db.query(updateQuery, [quantity, existing.rows[0].id]);
-            return result.rows[0];
+        if (checkProduct.rows.length === 0 || checkProduct.rows[0].availability !== 'in stock') {
+            return null;
+        }
+
+        // Only allow one per user
+        const exists = await db.query(
+            `SELECT id FROM cart_items WHERE user_id = $1 AND product_id = $2`,
+            [userId, productId]
+        );
+
+        if (exists.rows.length > 0) {
+            return exists.rows[0];;
         }
 
         // Insert new cart item
         const insertQuery = `
-            INSERT INTO cart_items (user_id, product_id, quantity)
-            VALUES ($1, $2, $3)
+            INSERT INTO cart_items (user_id, product_id)
+            VALUES ($1, $2)
             RETURNING *
         `;
-        const result = await db.query(insertQuery, [userId, productId, quantity]);
+        const result = await db.query(insertQuery, [userId, productId]);
         return result.rows[0];
 
     } catch (error) {
@@ -42,7 +41,7 @@ const addToCart = async (userId, productId, quantity = 1) => {
 const getCartItemsByUser = async (userId) => {
     try {
         const query = `
-            SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity
+            SELECT ci.id, ci.product_id, p.name, p.price
             FROM cart_items ci
             JOIN products p ON ci.product_id = p.id
             WHERE ci.user_id = $1
@@ -55,26 +54,7 @@ const getCartItemsByUser = async (userId) => {
     }
 };
 
-const updateCartItemQuantity = async (cartItemId, quantity) => {
-    try {
-        if (quantity <= 0) {
-            const del = await db.query(`DELETE FROM cart_items WHERE id = $1`, [cartItemId]);
-            return del.rowCount > 0;
-        }
-        const query = `
-            UPDATE cart_items
-            SET quantity = $1
-            WHERE id = $2
-            RETURNING *
-        `;
-        const result = await db.query(query, [quantity, cartItemId]);
-        return result.rows[0];
-    } catch (error) {
-        console.error("DB Error in updateCartItemQuantity:", error);
-        return null;
-    }
-};
-
+// remove cart item
 const removeCartItem = async (cartItemId) => {
     try {
         const query = `DELETE FROM cart_items WHERE id = $1`;
@@ -126,19 +106,25 @@ const processOrder = async (userId, orderInfo, cartItems, total, status = "pendi
         // Insert each order item
         for (const item of cartItems) {
             const itemQuery = `
-                INSERT INTO order_items (order_id, product_id, quantity, price_each)
-                VALUES ($1, $2, $3, $4)
+                INSERT INTO order_items (order_id, product_id, price_each)
+                VALUES ($1, $2, $3)
                 RETURNING *
             `;
             await client.query(itemQuery, [
                 orderId,
                 item.product_id,
-                item.quantity,
                 item.price_each
             ]);
         }
         // clear cart after order
         await client.query(`DELETE FROM cart_items WHERE user_id = $1`, [userId]);
+
+        await client.query(
+            `UPDATE products
+             SET availability = 'sold', sold_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
+             WHERE id = ANY($1::int[])`,
+            [cartItems.map(item => item.product_id)]
+        )
 
         await client.query("COMMIT");
         return { orderId };
@@ -174,7 +160,6 @@ const getOrderById = async (orderId) => {
                 o.venmo_confirmed,
 
                 oi.product_id,
-                oi.quantity,
                 oi.price_each,
 
                 p.name AS product_name,
@@ -218,9 +203,8 @@ const getOrderById = async (orderId) => {
                     product_id: r.product_id,
                     name: r.product_name,
                     image: r.product_image,
-                    quantity: r.quantity,
                     price_each: parseFloat(r.price_each),
-                    line_total: (r.quantity * r.price_each)
+                    line_total: parseFloat(r.price_each)
                 });
             }
         });
@@ -237,7 +221,7 @@ const getOrdersByUser = async (userId) => {
     try {
         const query = `
             SELECT 
-                id, total, status, created_at
+                id, total, status, created_at, completed_at
             FROM orders
             WHERE user_id = $1
             ORDER BY 
@@ -264,6 +248,7 @@ const showAllOrders = async (req, res) => {
                 o.user_id,
                 o.total AS order_total,
                 o.status,
+                o.completed_at,
                 o.created_at,
 
                 -- user information
@@ -280,7 +265,6 @@ const showAllOrders = async (req, res) => {
 
                 -- item information
                 oi.product_id,
-                oi.quantity,
                 oi.price_each,
 
                 -- product name + image
@@ -306,6 +290,7 @@ const showAllOrders = async (req, res) => {
                     total: parseFloat(row.order_total).toFixed(2),
                     status: row.status,
                     created_at: row.created_at,
+                    completed_at: row.completed_at,
                     first_name: row.first_name,
                     last_name: row.last_name,
                     email: row.email,
@@ -326,9 +311,8 @@ const showAllOrders = async (req, res) => {
                     product_id: row.product_id,
                     product_name: row.product_name,
                     product_image: row.product_image,
-                    quantity: row.quantity,
                     price_each: row.price_each,
-                    line_total: (row.quantity * row.price_each).toFixed(2)
+                    line_total: row.price_each
                 });
             }
         });
@@ -339,14 +323,37 @@ const showAllOrders = async (req, res) => {
         console.error("DB Error in showAllOrders:", error);
         return [];
     }
+
+};
+    
+const completeOrder = async (orderId) => {
+    try {
+        await db.query(
+            `UPDATE orders SET status = 'completed', updated_at = NOW() WHERE id = $1`,
+            [orderId]
+        );
+
+        await db.query(
+            `UPDATE orders
+            SET status = 'completed', 
+                completed_at = CURRENT_TIMESTAMP, 
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = $1`,
+            [orderId]
+        );
+        return true;
+    } catch (error) {
+        console.error("DB Error in completeOrder:", error);
+        return false;
+    }   
 };
 export { 
     addToCart,
     getCartItemsByUser,
-    updateCartItemQuantity,
     removeCartItem,
     processOrder,
     getOrderById,
     getOrdersByUser,
-    showAllOrders
+    showAllOrders,
+    completeOrder
 };

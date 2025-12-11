@@ -57,8 +57,8 @@ const saveUser = async (name, email, password) => {
         const hashedPassword = await hashPassword(password);
 
         const query = `
-            INSERT INTO users (name, email, password)
-            VALUES ($1, $2, $3)
+            INSERT INTO users (name, email, password, role_id)
+            VALUES ($1, $2, $3, 1)
             RETURNING id, name, email, created_at, updated_at
         `;
 

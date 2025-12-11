@@ -9,6 +9,8 @@ const createProductsTableIfNotExists = `
         description VARCHAR(500) NOT NULL,
         price DECIMAL(10, 2) NOT NULL,
         tag VARCHAR(20) NOT NULL,
+        availability VARCHAR(20) DEFAULT 'in stock',
+        sold_at TIMESTAMP NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
@@ -20,7 +22,6 @@ const createCartItemsTableIfNotExists = `
         id SERIAL PRIMARY KEY,
         user_id INTEGER NOT NULL REFERENCES users(id),
         product_id INTEGER NOT NULL REFERENCES products(id),
-        quantity INTEGER DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
@@ -45,6 +46,7 @@ const createOrdersTableIfNotExists = `
 
         total DECIMAL(10, 2) NOT NULL,
         status VARCHAR(50) DEFAULT 'pending',
+        completed_at TIMESTAMP NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
@@ -56,7 +58,6 @@ const createOrderItemsTableIfNotExists = `
         id SERIAL PRIMARY KEY,
         order_id INTEGER NOT NULL REFERENCES orders(id),
         product_id INTEGER NOT NULL REFERENCES products(id),
-        quantity INTEGER NOT NULL DEFAULT 1,
         price_each DECIMAL(10, 2) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )

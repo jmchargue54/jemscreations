@@ -60,7 +60,7 @@ const processLogin = async (req, res) => {
 
     // TODO: Redirect to protected dashboard (/dashboard)
     req.flash('success', 'Login successful!');
-    res.redirect('/dashboard');
+    res.redirect('/');
 };
 
 /**
@@ -121,7 +121,6 @@ const showDashboard = (req, res) => {
         delete sessionData.user.password;
     }
 
-    // TODO: Add login-specific styles
     addLoginSpecificStyles(res);
     // TODO: Render the dashboard view (forms/login/dashboard)
     // TODO: Pass title, user, and sessionData to template

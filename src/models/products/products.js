@@ -116,4 +116,4 @@ const getSortedFilteredProducts = (products, sortBy, tags) => {
         return products;
     };
 
-export { getAllProducts, getSortedFilteredProducts, jewelryProducts };
+export { getSortedFilteredProducts };

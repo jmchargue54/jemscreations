@@ -35,7 +35,7 @@ const processNewProductForm = async (req, res) => {
         return res.redirect("/createProduct");
     }
 
-    const { name, description, price, tag } = req.body;
+    const { name, description, price, tag, availability, soldAt } = req.body;
     console.log('file: ', req.file);
     const imageFilename = req.file ? `/uploads/${req.file.filename}` : null;
 
@@ -45,7 +45,9 @@ const processNewProductForm = async (req, res) => {
         name,
         description,
         price,
-        tag
+        tag,
+        availability,
+        soldAt
     );
 
     if (!savedProductForm) {
@@ -64,7 +66,6 @@ const processNewProductForm = async (req, res) => {
  */
 const showAllNewProducts = async (req, res) => {
     addNewProductSpecificStyles(res);
-    // const productForms = await getAllProductForms();
     const sortBy = req.query.sortBy || 'default';
     let tags = req.query.tag;
     

@@ -29,22 +29,14 @@
     <thead>
       <tr>
         <th>Product</th>
-        <th>Qty</th>
         <th>Price</th>
-        <% if (items.quantity > 0) { %>
-        <th>Line</th>
-        <% } %>
       </tr>
     </thead>
     <tbody>
       <% items.forEach(it => { %>
         <tr>
           <td><%= it.name %></td>
-          <td><%= it.quantity %></td>
           <td>$<%= it.price_each %></td>
-          <% if (it.quantity > 1) { %>
-          <td>$<%= it.line_total %></td>
-          <% } %>
         </tr>
       <% }) %>
     </tbody>
