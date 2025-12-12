@@ -9,6 +9,9 @@
                     <h3 class="response-subject"><%= form.subject %></h3>
                     <p class="response-message"><%= form.message %></p>
                     <p class="response-date">Submitted: <%= new Date(form.submitted).toLocaleDateString() %></p>
+                    <form action="/contact/responses/<%= form.id %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this submission?');">
+                        <button type="submit" class="delete-response-btn">Delete</button>
+                    </form>
                 </div>
             <% }); %>
         </div>

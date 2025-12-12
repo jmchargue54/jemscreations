@@ -22,6 +22,23 @@ const saveContactForm = async (subject, message) => {
     }
 };
 
+// delete message by id
+const deleteContactForm = async (id) => {
+    const query = `
+        DELETE FROM contact_form
+        WHERE id = $1
+        RETURNING id
+    `;
+
+    try {
+        const result = await db.query(query, [id]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error('DB Error in deleteContactFormById:', error);
+        return null; // Safe fallback for controller
+    }
+};
+
 /**
  * Retrieve all contact form submissions, ordered by most recent first
  * @returns {Promise<Array>} Array of contact form submissions
@@ -37,4 +54,4 @@ const getAllContactForms = async () => {
     return result.rows;
 };
 
-export { saveContactForm, getAllContactForms };
+export { saveContactForm, deleteContactForm, getAllContactForms };

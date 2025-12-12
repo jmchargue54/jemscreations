@@ -4,6 +4,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import flash from './src/middleware/flash.js';
+import { formatDateTime } from './utils/dateFormat.js';
 
 // MVC components
 import routes from './src/controllers/routes.js';
@@ -43,6 +44,9 @@ Configure Express
     }
 }));
 
+// make date formatter available in EJS templates
+app.locals.formatDateTime = formatDateTime;
+
 // static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -61,7 +65,7 @@ app.use(flash);
 app.use(globalMiddleware);
 
 // Serve uploaded files statically
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 /* 
 Routes

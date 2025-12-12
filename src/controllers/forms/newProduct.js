@@ -137,7 +137,7 @@ const processEditProduct = async (req, res) => {
     }
 
     // Extract updated fields
-    const { name, description, price, tag } = req.body;
+    const { name, description, price, tag, availability } = req.body;
             
     // if new image was uploaded; otherwise keep the old one
     // let image;
@@ -156,7 +156,8 @@ const processEditProduct = async (req, res) => {
         name,
         description,
         price,
-        tag
+        tag,
+        availability
     });
 
     if (!updatedProduct) {

@@ -3,10 +3,10 @@ import {
     processOrder,
     getOrderById,
     getOrdersByUser, 
+    getOrderItemsForOrders,
     showAllOrders,
     completeOrder 
     } from '../../models/forms/order.js';
-import db from '../../models/db.js';
 
 // show checkout page (optional) or directly process on POST /checkout
 const showCheckout = async (req, res) => {
@@ -109,10 +109,32 @@ const showMyOrders = async (req, res) => {
 
     try {
         const orders = await getOrdersByUser(userId);
+        const orderIds = orders.map(o => o.id);
+        const items = await getOrderItemsForOrders(orderIds);
 
+        // group by order
+        const itemsByOrder = {};
+        items.forEach(item => {
+            if (!itemsByOrder[item.order_id]) itemsByOrder[item.order_id] = [];
+            itemsByOrder[item.order_id].push({
+                product_id: item.product_id,
+                name: item.product_name,
+                image: item.product_image,
+                price_each: item.price_each
+            });
+        });
+
+        const finalOrders = orders.map(o => ({
+            ...o,
+            items: itemsByOrder[o.id] || []
+        }));
+
+        // finalOrders.forEach(order => {
+        //     console.log("Order:", order.id, "Items:", order.items);
+        // });
         res.render('forms/order/myOrders', {
             title: 'My Orders',
-            orders
+            orders: finalOrders
         });
     } catch (error) {
         console.error('Error fetching user orders:', error);

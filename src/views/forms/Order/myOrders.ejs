@@ -6,11 +6,26 @@
     <p>You have no orders yet.</p>
 <% } else { %>
 
-    <h2>Pending Orders</h2>
+    <script>
+        function toggleOrder(id) {
+            const row = document.getElementById('order-items-' + id);
+            if (row.style.display === "none" || row.style.display === "") {
+                row.style.display = "table-row";
+            } else {
+                row.style.display = "none";
+            }
+        }
+    </script>
+
     <% 
         const pending = orders.filter(o => o.status === 'pending');
         const past = orders.filter(o => o.status !== 'pending');
     %>
+
+    <!-- ======================= -->
+    <!--        PENDING ORDERS   -->
+    <!-- ======================= -->
+    <h2>Pending Orders</h2>
 
     <% if (pending.length === 0) { %>
         <p>No pending orders.</p>
@@ -22,22 +37,57 @@
                     <th>Total</th>
                     <th>Status</th>
                     <th>Placed On</th>
+                    <th>Items</th>
                 </tr>
             </thead>
             <tbody>
                 <% pending.forEach(order => { %>
+
+                    <!-- MAIN ROW -->
                     <tr>
                         <td><%= order.id %></td>
                         <td>$<%= order.total %></td>
                         <td><%= order.status %></td>
-                        <td><%= order.created_at.toDateString() %></td>
+                        <td><%= formatDateTime(order.created_at) %></td>
+                        <td>
+                            <span 
+                                class="toggle-btn" 
+                                style="cursor:pointer; color:blue; text-decoration:underline;" 
+                                onclick="toggleOrder('<%= order.id %>')">
+                                Show Items
+                            </span>
+                        </td>
                     </tr>
+
+                    <!-- DROPDOWN ROW -->
+                    <tr id="order-items-<%= order.id %>" class="order-items" style="display:none;">
+                        <td colspan="5">
+                            <% if (order.items.length === 0) { %>
+                                <p>No products found for this order.</p>
+                            <% } else { %>
+                                <% order.items.forEach(item => { %>
+                                    <div style="display:flex; align-items:center; margin-bottom:10px;">
+                                        <img 
+                                            src="<%= item.image %>" 
+                                            alt="<%= item.name %>" 
+                                            style="width:100px; height:100px; object-fit:cover; margin-right:10px;"
+                                        >
+                                        <strong><%= item.name %></strong> — $<%= item.price_each %>
+                                    </div>
+                                <% }) %>
+                            <% } %>
+                        </td>
+                    </tr>
+
                 <% }) %>
             </tbody>
         </table>
     <% } %>
 
 
+    <!-- ======================= -->
+    <!--         PAST ORDERS    -->
+    <!-- ======================= -->
     <h2>Past Orders</h2>
 
     <% if (past.length === 0) { %>
@@ -51,17 +101,49 @@
                     <th>Status</th>
                     <th>Placed On</th>
                     <th>Completed</th>
+                    <th>Items</th>
                 </tr>
             </thead>
             <tbody>
                 <% past.forEach(order => { %>
+
+                    <!-- MAIN ROW -->
                     <tr>
                         <td><%= order.id %></td>
                         <td>$<%= order.total %></td>
                         <td><%= order.status %></td>
-                        <td><%= order.created_at.toDateString() %></td>
-                        <td><%= order.completed_at ? order.completed_at.toDateString() : '' %></td>
+                        <td><%= formatDateTime(order.created_at) %></td>
+                        <td><%= order.completed_at ? formatDateTime(order.completed_at) : '' %></td>
+                        <td>
+                            <span 
+                                class="toggle-btn" 
+                                style="cursor:pointer; color:blue; text-decoration:underline;" 
+                                onclick="toggleOrder('<%= order.id %>')">
+                                Show Items
+                            </span>
+                        </td>
                     </tr>
+
+                    <!-- DROPDOWN ROW -->
+                    <tr id="order-items-<%= order.id %>" class="order-items" style="display:none;">
+                        <td colspan="6">
+                            <% if (order.items.length === 0) { %>
+                                <p>No products found for this order.</p>
+                            <% } else { %>
+                                <% order.items.forEach(item => { %>
+                                    <div style="display:flex; align-items:center; margin-bottom:10px;">
+                                        <img 
+                                            src="<%= item.image %>" 
+                                            alt="<%= item.name %>" 
+                                            style="width:100px; height:100px; object-fit:cover; margin-right:10px;"
+                                        >
+                                        <strong><%= item.name %></strong> — $<%= item.price_each %>
+                                    </div>
+                                <% }) %>
+                            <% } %>
+                        </td>
+                    </tr>
+
                 <% }) %>
             </tbody>
         </table>

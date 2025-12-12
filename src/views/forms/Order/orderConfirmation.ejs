@@ -28,6 +28,7 @@
   <table>
     <thead>
       <tr>
+        <th>Image</th>
         <th>Product</th>
         <th>Price</th>
       </tr>
@@ -35,6 +36,7 @@
     <tbody>
       <% items.forEach(it => { %>
         <tr>
+          <td><img src="<%= it.image %>" alt="<%= it.name %>" style="max-width: 100px;"></td>
           <td><%= it.name %></td>
           <td>$<%= it.price_each %></td>
         </tr>

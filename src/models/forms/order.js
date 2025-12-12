@@ -41,7 +41,7 @@ const addToCart = async (userId, productId) => {
 const getCartItemsByUser = async (userId) => {
     try {
         const query = `
-            SELECT ci.id, ci.product_id, p.name, p.price
+            SELECT ci.id, ci.product_id, p.name, p.price, p.image
             FROM cart_items ci
             JOIN products p ON ci.product_id = p.id
             WHERE ci.user_id = $1
@@ -208,6 +208,7 @@ const getOrderById = async (orderId) => {
                 });
             }
         });
+        // console.log(result.rows.map(r => r.product_image));
 
         return order;
 
@@ -236,6 +237,34 @@ const getOrdersByUser = async (userId) => {
         return [];
     }
 };
+
+const getOrderItemsForOrders = async (orderIds) => {
+    try {
+        if (!orderIds || orderIds.length === 0) return [];
+
+        const query = `
+            SELECT 
+                oi.order_id,
+                oi.product_id,
+                oi.price_each,
+                p.name AS product_name,
+                p.image AS product_image
+            FROM order_items oi
+            JOIN products p ON oi.product_id = p.id
+            WHERE oi.order_id = ANY($1)
+            ORDER BY oi.order_id;
+        `;
+
+        const result = await db.query(query, [orderIds]);
+        // console.log("Order Items Result:", result.rows);
+        return result.rows;
+
+    } catch (error) {
+        console.error("DB Error in getOrderItemsForOrders:", error);
+        return [];
+    }
+};
+
 
 const showAllOrders = async (req, res) => {
     try {
@@ -354,6 +383,7 @@ export {
     processOrder,
     getOrderById,
     getOrdersByUser,
+    getOrderItemsForOrders,
     showAllOrders,
     completeOrder
 };

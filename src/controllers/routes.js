@@ -13,7 +13,8 @@ import {
     } from './products.js';
 import { 
     showContactForm, 
-    processContactForm, 
+    processContactForm,
+    processDeleteContactForm, 
     showContactResponses, 
     } from './forms/contact.js';
 import { 
@@ -105,6 +106,7 @@ router.post('/users/:id/delete', requireRole('admin'), processDeleteAccount);
 router.get('/contact', showContactForm);
 router.post('/contact', contactValidation, processContactForm);
 router.get('/contact/responses', showContactResponses);
+router.post('/contact/responses/:id/delete', processDeleteContactForm);
 
 // cart
 router.get('/cart', requireLogin, viewCart);

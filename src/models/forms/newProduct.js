@@ -71,8 +71,12 @@ const getAvailableProducts = async () => {
 };
 
 // update a product by ID
-const updateProduct = async (id, { image, name, description, price, tag }) => {
+const updateProduct = async (id, { image, name, description, price, tag, availability }) => {
     try {
+        const soldAtValue = availability === 'sold'
+            ? "CURRENT_TIMESTAMP"
+            : null;
+
         const query = `
             UPDATE products
             SET
@@ -81,12 +85,14 @@ const updateProduct = async (id, { image, name, description, price, tag }) => {
                 description = $3,
                 price = $4,
                 tag = $5,
+                availability = $6,
+                sold_at = ${soldAtValue},
                 updated_at = CURRENT_TIMESTAMP
-            WHERE id = $6
+            WHERE id = $7
             RETURNING *
         `;
 
-        const values = [image, name, description, price, tag, id];
+        const values = [image, name, description, price, tag, availability, id];
         const result = await db.query(query, values);
 
         return result.rows[0] || null;

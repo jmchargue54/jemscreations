@@ -39,6 +39,15 @@
         </select>
     </div>
 
+    <div>
+        <label for="availability">Availability:</label>
+        <select name="availability" id="availability" required>
+            <option value="in stock" <%= product.availability === "in stock" ? "selected" : "" %>>In Stock</option>
+            <option value="sold" <%= product.availability === "sold" ? "selected" : "" %>>Sold</option>
+        </select>
+    </div>
+
+
     <button type="submit">Update Product</button>
     <a href="/createProduct/list">Cancel</a>
 

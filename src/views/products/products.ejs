@@ -58,20 +58,24 @@
             </a>
         </div>
     </div>
-    <div class="productsContainer">
-        <% products.forEach(product => { %>
-            <div class="productItem">
-                <img src="<%= product.image %>" alt="<%= product.name %>">
-                <h2><a href="/products/<%= product.id %>"><%= product.name %></a></h2>
-                <p><%= product.description %></p>
-                <p class="price">$<%= product.price %></p>
-                <form action="/cart/add" method="POST">
-                    <input type="hidden" name="productId" value="<%= product.id %>">
-                    <button type="submit" class="addToCartBtn">Add to Cart</button>
-                </form>
-            </div>
-        <% }) %>
-    </div>
+    <% if (products && products.length > 0) {%>
+        <div class="productsContainer">
+            <% products.forEach(product => { %>
+                <div class="productItem">
+                    <img src="<%= product.image %>" alt="<%= product.name %>">
+                    <h2><a href="/products/<%= product.id %>"><%= product.name %></a></h2>
+                    <p><%= product.description %></p>
+                    <p class="price">$<%= product.price %></p>
+                    <form action="/cart/add" method="POST">
+                        <input type="hidden" name="productId" value="<%= product.id %>">
+                        <button type="submit" class="addToCartBtn">Add to Cart</button>
+                    </form>
+                </div>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <p>No products available.</p>
+    <% } %>
 </div>
 
 <%- include('../partials/footer') %>

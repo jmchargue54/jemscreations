@@ -16,6 +16,12 @@ const pool = new Pool({
     ssl: false // Set to true if your database requires SSL connections
 });
 
+// force all DB connectino to use Pacific Timezone
+pool.on('connect', (client) => {
+    client.query("SET TIME ZONE 'America/Los_Angeles';");
+});
+
+
 /**
  * Common SSL Issue:
  *

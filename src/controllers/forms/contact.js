@@ -1,5 +1,5 @@
 import { validationResult } from 'express-validator';
-import { saveContactForm, getAllContactForms } from '../../models/forms/contact.js';
+import { saveContactForm, deleteContactForm, getAllContactForms } from '../../models/forms/contact.js';
 
 const addContactSpecificStyles = (res) => {
     res.addStyle('<link rel="stylesheet" href="/css/contact.css">');
@@ -43,6 +43,22 @@ const processContactForm = async (req, res) => {
     res.redirect('/contact');
 };
 
+// process delete contact form 
+const processDeleteContactForm = async (req, res) => {
+    const formId = req.params.id;
+
+    const deletedForm = await deleteContactForm(formId);
+    if (!deletedForm) {
+        req.flash('error', 'Failed to delete contact form.');
+        console.log('Failed to delete contact form with id:', formId);
+        return res.redirect('/contact/responses');
+    }
+
+    req.flash('success', 'Contact form deleted successfully!');
+    console.log('Contact form deleted with id:', formId);
+    res.redirect('/contact/responses');
+}
+
 /**
  * Display all contact form submissions
  */
@@ -56,4 +72,4 @@ const showContactResponses = async (req, res) => {
     });
 };
 
-export { showContactForm, processContactForm, showContactResponses };
+export { showContactForm, processContactForm, processDeleteContactForm, showContactResponses };
