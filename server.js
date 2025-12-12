@@ -155,8 +155,8 @@ Start Server
  */
 import fs from "fs";
 
-console.log("FILES IN views:");
-console.log(fs.readdirSync(path.join(process.cwd(), "src", "views"), { withFileTypes: true }));
+console.log("FILES IN views/order:");
+console.log(fs.readdirSync(path.join(process.cwd(), "src", "views", "order"), { withFileTypes: true }));
 
 
 app.listen(PORT, async () => {
