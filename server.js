@@ -154,8 +154,8 @@ if (NODE_ENV.includes('dev')) {
 Start Server
  */
 import fs from 'fs';
-console.log("FILES IN views/forms/newproduct:");
-console.log(fs.readdirSync(path.join(process.cwd(), "src", "views", "forms", "newproduct")));
+console.log("FILES IN views/forms/newProducts:");
+console.log(fs.readdirSync(path.join(process.cwd(), "src", "views", "forms", "newProducts")));
 
 
 app.listen(PORT, async () => {

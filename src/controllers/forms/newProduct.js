@@ -21,7 +21,7 @@ const addcreateProductSpecificStyles = (res) => {
  */
 const showNewProductForm = (req, res) => {
     addcreateProductSpecificStyles(res);
-    res.render("forms/newProduct/createProduct", {
+    res.render("forms/newProducts/createProduct", {
         title: "Add New Product",
     });
 };
@@ -80,7 +80,7 @@ const showAllNewProducts = async (req, res) => {
     const products = await getSortedFilteredProducts(productsArray, sortBy, tags);
 
 
-    res.render("forms/newProduct/list", {
+    res.render("forms/newProducts/list", {
         title: "New Product Submissions",
         products,
         currentSort: sortBy,
@@ -110,7 +110,7 @@ const showEditProductForm = async (req, res) => {
         return res.redirect('/createProduct/list');
     }
 
-    res.render(`forms/newProduct/edit`, {
+    res.render(`forms/newProducts/edit`, {
         title: 'Edit Product',
         product
     });
