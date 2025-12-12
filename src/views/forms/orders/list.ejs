@@ -66,7 +66,7 @@
 
                         <td>
                             <% if (order.status !== 'completed') { %>
-                                <form action="/order/list/<%= order.id %>/complete" method="POST">
+                                <form action="/orders/list/<%= order.id %>/complete" method="POST">
                                     <button type="submit" class="btn-complete">Mark as Completed</button>
                                 </form>
                             <% } else { %>

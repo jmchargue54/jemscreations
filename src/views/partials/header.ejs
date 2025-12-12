@@ -40,14 +40,14 @@
                 <% if (isLoggedIn) { %>
                     <li><a href="/dashboard">Dashboard</a></li>
                     <li><a href="/cart">Cart</a></li>
-                    <li><a href="/order/myOrders">My Orders</a></li>
+                    <li><a href="/orders/myOrders">My Orders</a></li>
 
                     <% if (user && user.role_name === 'admin') { %>
                         <li><a href="/users">All Users</a></li>
                         <li><a href="/contact/responses">Contact Responses</a></li>
                         <li><a href="/createProduct">Create Product</a></li>
                         <li><a href="/createProduct/list">Product List</a></li>
-                        <li><a href="/order/list">All Orders</a></li>
+                        <li><a href="/orders/list">All Orders</a></li>
                     <% } %>
 
                 <% } else { %>

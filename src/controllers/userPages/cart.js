@@ -21,7 +21,7 @@ const viewCart = async (req, res) => {
         subtotal += parseFloat(ci.price);
     });
 
-    res.render('forms/order/cart', {
+    res.render('forms/orders/cart', {
         title: 'Your Cart',
         cartItems,
         //product

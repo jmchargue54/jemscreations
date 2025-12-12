@@ -33,7 +33,7 @@ const showCheckout = async (req, res) => {
         return line;
     });
 
-    res.render('forms/order/checkout', {
+    res.render('forms/orders/checkout', {
         title: 'Checkout',
         items,
         subtotal: subtotal.toFixed(2)
@@ -95,7 +95,7 @@ const showOrderConfirmation = async (req, res) => {
         }
         
         addOrderSpecificStyles(res);
-        res.render('forms/order/orderConfirmation', {
+        res.render('forms/orders/orderConfirmation', {
             title: 'Order Confirmation',
             orderId,
             order,
@@ -139,7 +139,7 @@ const showMyOrders = async (req, res) => {
         //     console.log("Order:", order.id, "Items:", order.items);
         // });
         addOrderSpecificStyles(res);
-        res.render('forms/order/myOrders', {
+        res.render('forms/orders/myOrders', {
             title: 'My Orders',
             orders: finalOrders
         });
@@ -153,7 +153,7 @@ const handleShowAllOrders = async (req, res) => {
     try {
         const orders = await showAllOrders();
         addOrderSpecificStyles(res);
-        res.render('forms/order/list', {
+        res.render('forms/orders/list', {
             title: 'All Orders',
             orders
         });
@@ -169,10 +169,10 @@ const processCompleteOrder = async (req, res) => {
         await completeOrder(orderId);
 
         // Redirect back to the admin orders list
-        return res.redirect("/order/list");
+        return res.redirect("/orders/list");
     } catch (error) {
         console.error("Error marking order complete:", error);
-        return res.redirect("/order/list?error=true");
+        return res.redirect("/orders/list?error=true");
     }
 };
 

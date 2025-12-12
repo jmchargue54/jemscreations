@@ -117,8 +117,8 @@ router.post('/cart/remove', requireLogin, handleRemoveFromCart);
 router.get('/checkout', requireLogin, showCheckout);
 router.post('/checkout', requireLogin, handleProcessOrder);
 router.get('/orderConfirmation/:id', requireLogin, showOrderConfirmation);
-router.get('/order/myOrders', requireLogin, showMyOrders);
-router.get('/order/list', requireRole('admin'), handleShowAllOrders);
-router.post('/order/list/:id/complete', requireRole('admin'), processCompleteOrder);
+router.get('/orders/myOrders', requireLogin, showMyOrders);
+router.get('/orders/list', requireRole('admin'), handleShowAllOrders);
+router.post('/orders/list/:id/complete', requireRole('admin'), processCompleteOrder);
 
 export default router;
