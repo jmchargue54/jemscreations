@@ -153,10 +153,10 @@ if (NODE_ENV.includes('dev')) {
 /*
 Start Server
  */
-import fs from "fs";
+// import fs from "fs";
 
-console.log("FILES IN views/order:");
-console.log(fs.readdirSync(path.join(process.cwd(), "src", "views", "order"), { withFileTypes: true }));
+// console.log("FILES IN views/order:");
+// console.log(fs.readdirSync(path.join(process.cwd(), "src", "views", "order"), { withFileTypes: true }));
 
 
 app.listen(PORT, async () => {
