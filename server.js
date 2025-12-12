@@ -66,6 +66,10 @@ app.use(express.json());
 app.set('view engine', 'ejs');
 app.set('views', path.join(process.cwd(), 'src','views'));
 
+console.log("CWD:", process.cwd());
+console.log("DIRNAME:", __dirname);
+console.log("VIEWS:", path.join(process.cwd(), "src", "views"));
+
 /* 
 Global Middleware
  */
