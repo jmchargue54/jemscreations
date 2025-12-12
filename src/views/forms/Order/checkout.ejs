@@ -12,7 +12,10 @@
     <tbody>
       <% items.forEach(it => { %>
         <tr>
-          <td><%= it.name %></td>
+          <td>
+            <img src="<%= it.image %>" alt="<%= it.name %>">
+            <%= it.name %>
+          </td>
           <td>$<%= it.price.toFixed(2) %></td>
           <td>$<%= it.line_total.toFixed(2) %></td>
         </tr>

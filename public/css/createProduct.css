@@ -1,0 +1,166 @@
+/* product form and product edit */
+.product-form {
+    max-width: 650px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 1px solid #a62534;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-form > div {
+    margin-bottom: 1.5rem;
+}
+
+/* Labels */
+.product-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Inputs, selects, textarea */
+.product-form input,
+.product-form select,
+.product-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #a62534;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-form input:focus,
+.product-form select:focus,
+.product-form textarea:focus {
+    outline: none;
+    border-color: #6b0e19;
+    box-shadow: 0 0 5px rgba(44, 90, 160, 0.3);
+}
+
+/* Textarea */
+.product-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Image preview styling */
+.product-form img {
+    display: block;
+    margin-bottom: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+/* Submit button */
+.product-form button {
+    background-color: #a62534;
+    color: white;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+.product-form button:hover {
+    background-color: #6b0e19;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-form button:active {
+    transform: translateY(1px);
+}
+
+/* Cancel link styled like secondary button */
+.product-form a {
+    font-size: 1rem;
+    color: #6b0e19;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.product-form a:hover {
+    text-decoration: underline;
+}
+
+/* Button row alignment */
+.product-form button,
+.product-form a {
+    vertical-align: middle;
+}
+
+
+/* responsive */
+@media (max-width: 768px) {
+    .product-form {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .product-form img {
+        width: 100% !important;
+        max-width: 250px;
+    }
+
+    .product-form button {
+        width: 100%;
+        margin-bottom: 0.75rem;
+    }
+
+    .product-form a {
+        display: block;
+        margin-top: 0.5rem;
+        text-align: center;
+    }
+}
+
+
+
+
+/* Base input & textarea styling */
+input, select, textarea {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    outline: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Focus effect */
+input:focus, textarea:focus, select:focus {
+    border-color: #3b82f6; /* blue */
+    box-shadow: 0 0 6px rgba(59, 130, 246, 0.5);
+}
+
+/* Valid input with content */
+input:valid:not(:placeholder-shown),
+textarea:valid:not(:placeholder-shown),
+select:valid {
+    border-color: #22c55e; /* green */
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.35);
+}
+
+/* Invalid input (pattern mismatch, empty, etc.) */
+input:invalid:not(:placeholder-shown),
+textarea:invalid:not(:placeholder-shown) {
+    border-color: #ef4444; /* red */
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.35);
+}
+
+/* Optional — wrap groups for spacing */
+.form-group {
+    margin-bottom: 1rem;
+}

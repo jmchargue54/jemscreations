@@ -32,6 +32,8 @@ Configure Express
 
 
     // Configure session middleware
+    const isDev = NODE_ENV.includes('dev');
+
     app.use(session({
     store: new pgSession({
         conString: process.env.DB_URL,
@@ -42,9 +44,9 @@ Configure Express
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: true,
+        secure: !isDev, // true in production (HTTPS), false in development (HTTP)
         httpOnly: true,
-        sameSite: "none",
+        sameSite: isDev ? 'lax' : 'none', // lax in dev, none in production
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
@@ -103,6 +105,11 @@ app.use((err, req, res, next) => {
     // Log error details for debugging
     if (status === 404) {
         console.error('Error occurred:', err.message);
+        console.error('Stack trace:', err.stack);
+    }
+
+    if (status === 500) {
+        console.error('Server error:', err.message);
         console.error('Stack trace:', err.stack);
     }
 

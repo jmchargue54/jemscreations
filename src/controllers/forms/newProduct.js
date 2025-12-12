@@ -12,11 +12,15 @@ const addNewProductSpecificStyles = (res) => {
     res.addStyle('<link rel="stylesheet" href="/css/newProduct.css">');
 };
 
+const addcreateProductSpecificStyles = (res) => {
+    res.addStyle('<link rel="stylesheet" href="/css/createProduct.css">');
+}
+
 /**
  * Display the new product form
  */
 const showNewProductForm = (req, res) => {
-    addNewProductSpecificStyles(res);
+    addcreateProductSpecificStyles(res);
     res.render("forms/newProduct/createProduct", {
         title: "Add New Product",
     });
@@ -85,7 +89,7 @@ const showAllNewProducts = async (req, res) => {
 }
 
 const showEditProductForm = async (req, res) => {
-    addNewProductSpecificStyles(res);
+    addcreateProductSpecificStyles(res);
     const productId = parseInt(req.params.id);
     const currentUser = req.session.user;
 

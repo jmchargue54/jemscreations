@@ -4,8 +4,13 @@ import {
     removeCartItem
     } from '../../models/forms/order.js';
 
+const addCartSpecificStyles = (res) => {
+    res.addStyle('<link rel="stylesheet" href="/css/order.css">');
+}
+
 // display the cart page
 const viewCart = async (req, res) => {
+    addCartSpecificStyles(res);
     const userId = req.session?.userId;
 
     const cartItems = await getCartItemsByUser(userId);

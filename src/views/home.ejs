@@ -1,24 +1,26 @@
 <%- include('partials/header') %>
     <h1><%= title %></h1>
     <div class="homeProducts">
-        <div class="productsContainer">
-            <% getAllProducts.slice(0,5).forEach(product => { %>
-                <div class="productItem">
-                    <img src="<%= product.image %>" alt="<%= product.name %>">
-                    <h2><a href="/products/<%= product.id %>"><%= product.name %></a></h2>
-                    <p><%= product.description %></p>
-                    <p class="price">$<%= product.price %></p>
-                    <form action="/cart/add" method="POST">
-                        <input type="hidden" name="productId" value="<%= product.id %>">
-                        <button type="submit" class="addToCartBtn">Add to Cart</button>
-                    </form>
-                </div>
-            <% }) %>
-        </div>
-        <div class="seeMoreContainer">
-            <img src="/photos/Jems Logo Gem-resize.png" alt="Jems Creations Logo">
-            <a class="seeMoreBtn" href="/products">See More →</a>
-        </div>
+        <% if (getAllProducts && getAllProducts.length > 0) {%>
+            <div class="productsContainer">
+                <% getAllProducts.slice(0,5).forEach(product => { %>
+                    <div class="productItem">
+                        <img src="<%= product.image %>" alt="<%= product.name %>">
+                        <h2><a href="/products/<%= product.id %>"><%= product.name %></a></h2>
+                        <p><%= product.description %></p>
+                        <p class="price">$<%= product.price %></p>
+                        <form action="/cart/add" method="POST">
+                            <input type="hidden" name="productId" value="<%= product.id %>">
+                            <button type="submit" class="addToCartBtn">Add to Cart</button>
+                        </form>
+                    </div>
+                <% }) %>
+            </div>
+            <div class="seeMoreContainer">
+                <img src="/photos/Jems Logo Gem-resize.png" alt="Jems Creations Logo">
+                <a class="seeMoreBtn" href="/products">See More →</a>
+            </div>
+        <% } %>
     </div>
     <h2>About Me</h2>
     <div class="welcome">

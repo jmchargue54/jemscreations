@@ -8,8 +8,13 @@ import {
     completeOrder 
     } from '../../models/forms/order.js';
 
+const addOrderSpecificStyles = (res) => {
+    res.addStyle('<link rel="stylesheet" href="/css/order.css">');
+}
+
 // show checkout page (optional) or directly process on POST /checkout
 const showCheckout = async (req, res) => {
+    addOrderSpecificStyles(res);
     const userId = req.session?.userId;
     if (!userId) return res.redirect('/login');
 
@@ -81,14 +86,15 @@ const handleProcessOrder = async (req, res) => {
 
 const showOrderConfirmation = async (req, res) => {
     const orderId = req.params.id;
-
+    
     try {
         const order = await getOrderById(orderId);
-
+        
         if (!order) {
             return res.status(404).send('Order not found');
         }
-
+        
+        addOrderSpecificStyles(res);
         res.render('forms/order/orderConfirmation', {
             title: 'Order Confirmation',
             orderId,
@@ -132,6 +138,7 @@ const showMyOrders = async (req, res) => {
         // finalOrders.forEach(order => {
         //     console.log("Order:", order.id, "Items:", order.items);
         // });
+        addOrderSpecificStyles(res);
         res.render('forms/order/myOrders', {
             title: 'My Orders',
             orders: finalOrders
@@ -145,6 +152,7 @@ const showMyOrders = async (req, res) => {
 const handleShowAllOrders = async (req, res) => {
     try {
         const orders = await showAllOrders();
+        addOrderSpecificStyles(res);
         res.render('forms/Order/list', {
             title: 'All Orders',
             orders

@@ -51,7 +51,7 @@
     }
 
     button {
-        background-color: #6b0e19;
+        background-color: #a62534;
         color: white;
         padding: 0.75rem 2rem;
         border: none;
@@ -64,7 +64,7 @@
         margin: 0 auto;
 
         &:hover {
-            background-color: #1e3f73;
+            background-color: #6b0e19;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
