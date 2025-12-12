@@ -64,11 +64,12 @@ app.use(express.json());
 
 // Set EJS as the templating engine
 app.set('view engine', 'ejs');
-if (NODE_ENV.includes('dev')) {
-    app.set('views', path.join(__dirname, 'src/views'));
-} else {
-    app.set ('views', path.join(__dirname, 'views'));
-}
+app.set('views', path.join(__dirname, 'src/views'));
+// if (NODE_ENV.includes('dev')) {
+//     app.set('views', path.join(__dirname, 'src/views'));
+// } else {
+//     app.set ('views', path.join(__dirname, 'views'));
+// }
 
 
 /* 
