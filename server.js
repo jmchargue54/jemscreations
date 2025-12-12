@@ -153,6 +153,12 @@ if (NODE_ENV.includes('dev')) {
 /*
 Start Server
  */
+import fs from "fs";
+
+console.log("FILES IN views:");
+console.log(fs.readdirSync(path.join(process.cwd(), "src", "views"), { withFileTypes: true }));
+
+
 app.listen(PORT, async () => {
     try {
         await testConnection();
