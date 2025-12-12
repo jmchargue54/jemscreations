@@ -7,11 +7,6 @@ const setLocalVariables = (req, res) => {
     res.locals.currentYear = new Date().getFullYear();
     res.locals.NODE_ENV = process.env.NODE_ENV.toLowerCase() || 'production';
     res.locals.queryParams = req.query;
-    // Convenience variable for UI state based on session state
-    res.locals.isLoggedIn = false;
-    if (req.session && req.session.user) {
-        res.locals.isLoggedIn = true;
-    }
 };
 
 const setHeadAssetsFunctionality = (res) => {
