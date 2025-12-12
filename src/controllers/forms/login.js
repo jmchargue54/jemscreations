@@ -57,6 +57,8 @@ const processLogin = async (req, res) => {
     // TODO: Store user information in session: req.session.user = user object (without password)
     req.session.user = user;
     req.session.userId = user.id;
+    
+    console.log("SESSION USER AFTER LOGIN:", req.session.user);
 
     // TODO: Redirect to protected dashboard (/dashboard)
     req.flash('success', 'Login successful!');
