@@ -27,6 +27,10 @@ Configure Express
 // Initialize PostgreSQL session store
     const pgSession = connectPgSimple(session);
 
+    // Trust first proxy
+    app.set('trust proxy', 1); 
+
+
     // Configure session middleware
     app.use(session({
     store: new pgSession({
@@ -38,9 +42,9 @@ Configure Express
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: NODE_ENV === 'production',
+        secure: true,
         httpOnly: true,
-        sameSite: NODE_ENV === 'production' ? 'none' : 'lax',
+        sameSite: "none",
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
