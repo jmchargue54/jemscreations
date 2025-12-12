@@ -56,6 +56,7 @@ app.locals.formatDateTime = formatDateTime;
 
 // static files
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Allow Express to receive and process common POST data
 app.use(express.urlencoded({ extended: true }));
@@ -65,24 +66,22 @@ app.use(express.json());
 app.set('view engine', 'ejs');
 app.set ('views', path.join(__dirname, 'src/views'));
 
+
 /* 
 Global Middleware
  */
 app.use(flash);
 app.use(globalMiddleware);
 
-// Serve uploaded files statically
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
-
-/* 
-Routes
- */
 app.use((req, res, next) => {
     res.locals.isLoggedIn = !!req.session.user;
     res.locals.user = req.session.user || null;
     next();
 });
 
+/* 
+Routes
+ */
 app.use('/', routes)
 
 /* 
