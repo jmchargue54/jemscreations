@@ -153,7 +153,7 @@ const handleShowAllOrders = async (req, res) => {
     try {
         const orders = await showAllOrders();
         addOrderSpecificStyles(res);
-        res.render('forms/Order/list', {
+        res.render('forms/order/list', {
             title: 'All Orders',
             orders
         });
