@@ -201,7 +201,7 @@ const seedRolesAndUsers = async (verbose = true) => {
 /**
  * Runs SQL against your project database to setup anything you might need for your practice site.
  */
-const setupPracticeDatabase = async (verbose = true) => {
+const setupUserTables = async (verbose = true) => {
     // Ensure contact_form table exists
     await insertContactForm(verbose);
 
@@ -218,4 +218,4 @@ const setupPracticeDatabase = async (verbose = true) => {
     await seedRolesAndUsers(verbose);
 };
 
-export default setupPracticeDatabase;
+export default setupUserTables;
