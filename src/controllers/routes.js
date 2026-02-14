@@ -87,7 +87,7 @@ router.post('/createProduct/list/:id/delete', processDeleteProduct);
 // User registration routes
 router.get('/register', showRegistrationForm);
 router.post('/register', registrationValidation, processRegistration);
-router.get('/users', showAllUsers);
+router.get('/users', requireRole('admin'), showAllUsers);
 
 // login and logout
 router.get('/login', showLoginForm);

@@ -4,6 +4,12 @@ const addHomeSpecificStyles = (res) => {
 }
 
 const homePage = async (req, res) => {
+    if (req.query.logout === 'success') {
+        req.flash('success', 'Logged out successfully');
+    }
+    if (req.query.login === 'success') {
+        req.flash('success', 'Login successful!');
+    }
     addHomeSpecificStyles(res);
     const products = await getAvailableProducts();
     res.render('home', { 

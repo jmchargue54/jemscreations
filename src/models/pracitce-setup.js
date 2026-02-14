@@ -26,7 +26,8 @@ const createRolesTableIfNotExists = `
 const createUsersTableIfNotExists = `
     CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
+        first_name VARCHAR(255) NOT NULL,
+        last_name VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -156,9 +157,9 @@ const seedRolesAndUsers = async (verbose = true) => {
             // No admin exists, create one
             const hashedPassword = await hashPassword('Test1234!');
             await db.query(`
-                INSERT INTO users (name, email, password, role_id) 
-                VALUES ($1, $2, $3, $4)
-            `, ['Admin User', 'admin@example.com', hashedPassword, adminRoleId]);
+                INSERT INTO users (first_name, last_name, email, password, role_id) 
+                VALUES ($1, $2, $3, $4, $5)
+            `, ['Admin', 'User', 'admin@example.com', hashedPassword, adminRoleId]);
             if (verbose) {
                 console.log('Admin user created: admin@example.com / Test1234!');
             }
@@ -181,9 +182,9 @@ const seedRolesAndUsers = async (verbose = true) => {
                 const userEmail = `user${userCount + i + 1}@example.com`;
 
                 await db.query(`
-                    INSERT INTO users (name, email, password, role_id) 
-                    VALUES ($1, $2, $3, $4)
-                `, [userName, userEmail, hashedPassword, userRoleId]);
+                    INSERT INTO users (first_name, last_name, email, password, role_id) 
+                    VALUES ($1, $2, $3, $4, $5)
+                `, [userName.split(' ')[0], userName.split(' ')[1], userEmail, hashedPassword, userRoleId]);
             }
 
             if (verbose) {

@@ -11,7 +11,8 @@ const findUserByEmail = async (email) => {
         const query = `
             SELECT 
                 users.id, 
-                users.name, 
+                users.first_name, 
+                users.last_name, 
                 users.email, 
                 users.password, 
                 users.created_at,

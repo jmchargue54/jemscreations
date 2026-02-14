@@ -4,10 +4,15 @@ import { body } from 'express-validator';
  * Comprehensive validation rules for user registration
  */
 const registrationValidation = [
-    body('name')
+    body('first_name')
         .trim()
-        .isLength({ min: 7 })
-        .withMessage('Name must be at least 7 characters long'),
+        .isLength({ min: 2 })
+        .withMessage('First name must be at least 2 characters long'),
+
+    body('last_name')
+        .trim()
+        .isLength({ min: 2 })
+        .withMessage('Last name must be at least 2 characters long'),
 
     body('email')
         .trim()
@@ -48,10 +53,15 @@ const registrationValidation = [
  * Validation rules for account updates
  */
 const updateAccountValidation = [
-    body('name')
+    body('first_name')
         .trim()
-        .isLength({ min: 7 })
-        .withMessage('Name must be at least 7 characters long'),
+        .isLength({ min: 2 })
+        .withMessage('First name must be at least 2 characters long'),
+
+    body('last_name')
+        .trim()
+        .isLength({ min: 2 })
+        .withMessage('Last name must be at least 2 characters long'),
 
     body('email')
         .trim()

@@ -25,37 +25,32 @@ const requireLogin = (req, res, next) => {
  */
 const requireRole = (roleName) => {
     return (req, res, next) => {
-        // TODO: Check if user is logged in (req.session.user exists)
-        // If not logged in, set flash message and redirect to /login
-        // Flash message example:
-        // req.session.flash = {
-        //     type: 'error',
-        //     message: 'You must be logged in to access this page.'
-        // };
         if (!req.session.user) {
-            req.session.flash = {
-                type: 'error',
-                message: 'You must be logged in to access this page.'
-            };
-            return res.redirect('/login');
+            req.session.flash = req.session.flash || {};
+            req.session.flash.error = ['You must be logged in to access this page.'];
+            
+            // Save session before redirecting
+            return req.session.save((err) => {
+                if (err) {
+                    console.error('Session save error:', err);
+                }
+                res.redirect('/login');
+            });
         }
 
-        // TODO: Check if user's role_name matches the required roleName
-        // If roles don't match, set flash message and redirect to /
-        // Flash message example:
-        // req.session.flash = {
-        //     type: 'error',
-        //     message: 'You do not have permission to access this page.'
-        // };
         if (req.session.user.role_name !== roleName) {
-            req.session.flash = {
-                type: 'error',
-                message: 'You do not have permission to access this page.'
-            };
-            return res.redirect('/');
+            req.session.flash = req.session.flash || {};
+            req.session.flash.error = ['You do not have permission to access this page.'];
+            
+            // Save session before redirecting
+            return req.session.save((err) => {
+                if (err) {
+                    console.error('Session save error:', err);
+                }
+                res.redirect('/');
+            });
         }
 
-        // TODO: If user has required role, call next() to continue
         next();
     };
 };

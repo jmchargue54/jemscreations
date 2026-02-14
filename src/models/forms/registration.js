@@ -46,25 +46,30 @@ const emailExists = async (email) => {
 
 /**
  * Save a new user registration to the database
- * @param {string} name - User's full name
+ * @param {string} first_name - User's first name
+ * @param {string} last_name - User's last name
  * @param {string} email - User's email address
  * @param {string} password - User's plain text password (will be hashed)
  * @returns {Promise<Object|null>} The saved user (without password) or null if failed
  */
-const saveUser = async (name, email, password) => {
+const saveUser = async (first_name, last_name, email, password) => {
     try {
         // TODO: Hash the password using hashPassword function
         const hashedPassword = await hashPassword(password);
+        if (!hashedPassword) {
+            throw new Error('Failed to hash password');
+            return null;
+        }
 
         const query = `
-            INSERT INTO users (name, email, password, role_id)
-            VALUES ($1, $2, $3, 1)
-            RETURNING id, name, email, created_at, updated_at
+            INSERT INTO users (first_name, last_name, email, password, role_id)
+            VALUES ($1, $2, $3, $4, 1)
+            RETURNING id, first_name, last_name, email, created_at, updated_at
         `;
 
         // TODO: Execute the query with the parameters and return the user data
         // HINT: Use the hashed password, not the plain text password
-        const result = await db.query(query, [name, email, hashedPassword]);
+        const result = await db.query(query, [first_name, last_name, email, hashedPassword]);
         return result.rows[0];
 
     } catch (error) {
@@ -80,7 +85,7 @@ const saveUser = async (name, email, password) => {
 const getAllUsers = async () => {
     try {
         const query = `
-            SELECT id, name, email, created_at, updated_at
+            SELECT id, first_name, last_name, email, created_at, updated_at
             FROM users
             ORDER BY created_at DESC
         `;
@@ -105,7 +110,8 @@ const getUserById = async (id) => {
         const query = `
             SELECT 
                 users.id,
-                users.name,
+                users.first_name,
+                users.last_name,
                 users.email,
                 users.created_at,
                 roles.role_name
@@ -125,20 +131,21 @@ const getUserById = async (id) => {
 /**
  * Update a user's name and email
  * @param {number} id - User ID to update
- * @param {string} name - New name
+ * @param {string} first_name - New first name
+ * @param {string} last_name - New last name
  * @param {string} email - New email address
  * @returns {Promise<Object|null>} Updated user object or null if failed
  */
-const updateUser = async (id, name, email) => {
+const updateUser = async (id, first_name, last_name, email) => {
     try {
         const query = `
             UPDATE users 
-            SET name = $1, email = $2, updated_at = CURRENT_TIMESTAMP
-            WHERE id = $3
-            RETURNING id, name, email, updated_at
+            SET first_name = $1, last_name = $2, email = $3, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $4
+            RETURNING id, first_name, last_name, email, updated_at
         `;
 
-        const result = await db.query(query, [name, email, id]);
+        const result = await db.query(query, [first_name, last_name, email, id]);
         return result.rows[0] || null;
     } catch (error) {
         console.error('DB Error in updateUser:', error);

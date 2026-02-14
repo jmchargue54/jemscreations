@@ -2,12 +2,22 @@
 <h1>Edit Account</h1>
 <form method="POST" action="/users/<%= user.id %>/update">
     <div>
-        <label for="name">Name:</label>
+        <label for="first_name">First Name:</label>
         <input 
             type="text" 
-            id="name" 
-            name="name" 
-            value="<%= user.name %>" 
+            id="first_name" 
+            name="first_name" 
+            value="<%= user.first_name %>" 
+            required
+        >
+    </div>
+    <div>
+        <label for="last_name">Last Name:</label>
+        <input 
+            type="text" 
+            id="last_name" 
+            name="last_name" 
+            value="<%= user.last_name %>" 
             required
         >
     </div>

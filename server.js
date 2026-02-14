@@ -83,6 +83,7 @@ app.use('/', routes);
 Errors
 */
 app.use((req, res, next) => {
+    console.log('404 triggered for:', req.originalUrl);
     const err = new Error('Page Not Found');
     err.status = 404;
     next(err);

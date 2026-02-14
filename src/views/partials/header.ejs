@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <% if (NODE_ENV.includes('dev')) { %>
+    <!-- <% if (NODE_ENV.includes('dev')) { %>
         <script>
             // Get the current hostname and port from the browser
             const host = window.location.hostname;
@@ -11,12 +11,30 @@
             const wsPort = currentPort ? (parseInt(currentPort) + 1) : 3001;
 
             // Create WebSocket connection using dynamic hostname and port
+            // const ws = new WebSocket(`ws://${host}:${wsPort}`);
+            // ws.onclose = () => {
+            //     setTimeout(() => location.reload(), 2000);
+            // };
             const ws = new WebSocket(`ws://${host}:${wsPort}`);
-            ws.onclose = () => {
-                setTimeout(() => location.reload(), 2000);
+            let intentionalClose = false;
+
+            ws.onmessage = (msg) => {
+                if (msg.data === 'reload') {
+                    intentionalClose = true;
+                    location.reload();
+                }
             };
+
+            ws.onclose = () => {
+                if (!intentionalClose) {
+                    // Reconnect without reloading
+                    setTimeout(() => {
+                        // Recreate WebSocket connection here
+                    }, 2000);
+                }
+            };        
         </script>
-    <% } %>
+    <% } %> -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>

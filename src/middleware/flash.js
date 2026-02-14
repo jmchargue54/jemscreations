@@ -39,6 +39,10 @@ const flashMiddleware = (req, res, next) => {
             }
             // Add the message to the appropriate type array
             req.session.flash[type].push(message);
+            
+            // Force session to be recognized as modified
+            req.session.flash = { ...req.session.flash };
+            
             return;
         }
 

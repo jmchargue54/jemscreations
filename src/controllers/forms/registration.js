@@ -33,14 +33,17 @@ const showRegistrationForm = (req, res) => {
 const processRegistration = async (req, res) => {
     // TODO: Check for validation errors using validationResult(req)
     const errors = validationResult(req);
+    console.log("processing registration")
 
     // TODO: If errors exist, redirect back to registration form
     if (!errors.isEmpty()) {
+        console.log('Validation errors during registration:', errors.array());
+        req.flash('error', 'Please correct the errors in the form.');
         return res.redirect('/register')
     }
     
-    // TODO: Extract name, email, password from req.body
-    const { name, email, password } = req.body;
+    // TODO: Extract first_name, last_name, email, password from req.body
+    const { first_name, last_name, email, password } = req.body;
     
     // TODO: Check if email already exists using emailExists()
     const exists = await emailExists(email);
@@ -52,7 +55,7 @@ const processRegistration = async (req, res) => {
     } 
     
     // TODO: Save the user using saveUser()
-    const saved = await saveUser(name, email, password);
+    const saved = await saveUser(first_name, last_name, email, password);
     // TODO: If save fails, log error and redirect back
     if (!saved) {
         req.flash('error', 'Failed to save user during registration');
@@ -102,7 +105,7 @@ const showEditAccountForm = async (req, res) => {
     //     message: 'User not found.'
     // };
     if (!targetUser) {
-        req.flash('error', 'User coud not be found.');
+        req.flash('error', 'User could not be found.');
         return res.redirect('/users');
     }
     // TODO: Determine if current user can edit this account
@@ -138,20 +141,29 @@ const processEditAccount = async (req, res) => {
 
     // Check for validation errors
     if (!errors.isEmpty()) {
-        req.flash('error', 'Please correct the errors in the form.');
-        return res.redirect(`/users/${req.params.id}/edit`);
+        errors.array().forEach(error => {
+            req.flash('error', error.msg);
+        });
+        // req.flash('error', 'Please correct the errors in the form.');
+        return req.session.save((err) => {
+            if (err) { console.error('Session save error:', err); }
+            return res.redirect(`/users/${req.params.id}/edit`);
+        });
     }
 
     const targetUserId = parseInt(req.params.id);
     const currentUser = req.session.user;
-    const { name, email } = req.body;
+    const { first_name, last_name, email } = req.body;
 
     // TODO: Retrieve the target user to verify they exist
     // If not found, set flash message and redirect to /users
     const targetUser = await getUserById(targetUserId);
     if (!targetUser) {
         req.flash('error', 'User not found.');
-        return res.redirect('/users');
+        return req.session.save((err) => {
+            if (err) { console.error('Session save error:', err); }
+            return res.redirect('/users');
+        });
     }
 
     // TODO: Check edit permissions (same as showEditAccountForm)
@@ -159,7 +171,10 @@ const processEditAccount = async (req, res) => {
     const canEdit = (currentUser.id === targetUserId) || (currentUser.role_name === 'admin');
     if (!canEdit) {
         req.flash('error', 'You do not have permission to edit this account.');
-        return res.redirect('/users');
+        return req.session.save((err) => {
+            if (err) { console.error('Session save error:', err); }
+            return res.redirect('/users');
+        });
     }
 
     // TODO: Check if the new email already exists for a DIFFERENT user
@@ -169,26 +184,39 @@ const processEditAccount = async (req, res) => {
     const emailTaken = await emailExists(email);
     if (emailTaken && email !== targetUser.email) {
         req.flash ('error', 'The provided email is already in use by another account.');
-        return res.redirect(`/users/${targetUserId}/edit`);
+        return req.session.save((err) => {
+            if (err) { console.error('Session save error:', err); }
+            return res.redirect(`/users/${targetUserId}/edit`);
+        });
     }
     // TODO: Update the user in the database using updateUser
     // If update fails, set flash message and redirect back to edit form
-    const updatedUser = await updateUser(targetUserId, name, email);
+    const updatedUser = await updateUser(targetUserId, first_name, last_name, email);
     if (!updatedUser) {
         req.flash ('error', 'Failed to update the account. Please try again.');
-        return res.redirect(`/users/${targetUserId}/edit`);
+        return req.session.save((err) => {
+            if (err) { console.error('Session save error:', err); }
+            return res.redirect(`/users/${targetUserId}/edit`);
+        });
     }
 
     // TODO: If the current user edited their own account, update their session
     // Hint: Update req.session.user with the new name and email
     if (currentUser.id === targetUserId) {
-        req.session.user.name = updatedUser.name;
+        req.session.user.first_name = updatedUser.first_name;
+        req.session.user.last_name = updatedUser.last_name;
         req.session.user.email = updatedUser.email;
     }
 
     // Success! Set flash message and redirect
     req.flash('success', 'Account updated successfully.');
-    res.redirect('/users');
+    return req.session.save((err) => {
+        if (err) { console.error('Session save error:', err); }
+        // setTimeout(() => {
+        //     res.redirect('/dashboard');
+        // }, 100);
+        return res.redirect('/dashboard');
+    });
 };
 
 /**
@@ -203,7 +231,7 @@ const processDeleteAccount = async (req, res) => {
     // If not admin, set flash message and redirect
     if (currentUser.role_name !== 'admin') {
         req.flash('error', 'You do not have permission to delete accounts.');
-        return res.redirect('/users');
+        return res.redirect('/dashboard');
     }
 
     // TODO: Prevent admins from deleting their own account
@@ -215,7 +243,7 @@ const processDeleteAccount = async (req, res) => {
     // };
     if (targetUserId === currentUser.id) {
         req.flash('error', 'You cannot delete your own account.');
-        return res.redirect('/users');
+        return res.redirect('/dashboard');
     }
 
     // TODO: Delete the user using deleteUser function
@@ -223,7 +251,7 @@ const processDeleteAccount = async (req, res) => {
     const deleted = await deleteUser(targetUserId);
     if (!deleted) {
         req.flash('error', 'Failed to delete the account. Please try again.');
-        return res.redirect('/users');
+        return res.redirect('/dashboard');
     }
 
 
