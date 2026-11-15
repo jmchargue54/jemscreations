@@ -8,12 +8,12 @@ type AdminOrder = { id: number; guest_name: string | null; guest_email: string |
 
 const statuses: OrderStatus[] = ["submitted", "pending", "processing", "shipped", "complete", "canceled"];
 
-export function AdminOrdersManager({ initialOrders }: { initialOrders: AdminOrder[] }) {
+export function AdminOrdersManager({ initialOrders, initialRestoredOrderIds = [] }: { initialOrders: AdminOrder[]; initialRestoredOrderIds?: number[] }) {
   const [orders, setOrders] = useState(initialOrders);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [restoringId, setRestoringId] = useState<number | null>(null);
-  const [restoredOrderIds, setRestoredOrderIds] = useState<Set<number>>(new Set());
+  const [restoredOrderIds, setRestoredOrderIds] = useState<Set<number>>(new Set(initialRestoredOrderIds));
 
   async function updateStatus(id: number, status: OrderStatus) {
     setError(null);
