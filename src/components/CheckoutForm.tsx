@@ -17,6 +17,9 @@ export function CheckoutForm({ email }: { email: string }) {
   const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiration, setExpiration] = useState("");
+  const [cvc, setCvc] = useState("");
 
   useEffect(() => {
     try { setItems(JSON.parse(localStorage.getItem(CART_STORAGE_KEY) ?? "[]")); } catch { setItems([]); }
@@ -40,6 +43,29 @@ export function CheckoutForm({ email }: { email: string }) {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+
+    if (paymentMethod === "card") {
+      const cardDigits = cardNumber.replace(/\D/g, "");
+      if (cardDigits.length < 13 || cardDigits.length > 19) {
+        setError("Card number must contain between 13 and 19 digits.");
+        return;
+      }
+      if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiration)) {
+        setError("Enter the expiration date in MM/YY format.");
+        return;
+      }
+      const [month, year] = expiration.split("/").map(Number);
+      const expirationDate = new Date(2000 + year, month, 0, 23, 59, 59, 999);
+      if (expirationDate < new Date()) {
+        setError("The card expiration date must be in the future.");
+        return;
+      }
+      if (!/^\d{3,4}$/.test(cvc)) {
+        setError("CVV must contain 3 or 4 digits.");
+        return;
+      }
+    }
+
     setIsSubmitting(true);
     const values = new FormData(event.currentTarget);
     const street = String(values.get("street_address") ?? "").trim();
@@ -85,7 +111,7 @@ export function CheckoutForm({ email }: { email: string }) {
       {error && <p className="auth-feedback error" role="alert">{error}</p>}
       <p>Choose how you paid for your order.</p>
       <div className="payment-options"><label className="payment-option"><input type="radio" name="payment-method" value="venmo" checked={paymentMethod === "venmo"} onChange={() => setPaymentMethod("venmo")} /> I paid through Venmo</label><label className="payment-option"><input type="radio" name="payment-method" value="card" checked={paymentMethod === "card"} onChange={() => setPaymentMethod("card")} /> Pay by card</label></div>
-      {paymentMethod === "venmo" ? <p className="payment-help">Send payment through Venmo to the account shown by the business owner, then submit your order.</p> : <div className="card-fields"><label>Name on card<input required autoComplete="cc-name" /></label><label>Card number<input required inputMode="numeric" autoComplete="cc-number" maxLength={19} /></label><div className="card-row"><label>Expiration<input required placeholder="MM/YY" autoComplete="cc-exp" /></label><label>CVC<input required inputMode="numeric" autoComplete="cc-csc" maxLength={4} /></label></div><p className="payment-help">Card details are used only for this checkout form and are not saved.</p></div>}
+      {paymentMethod === "venmo" ? <p className="payment-help">Send payment through Venmo to the account shown by the business owner, then submit your order.</p> : <div className="card-fields"><label>Name on card<input name="card_name" required autoComplete="cc-name" /></label><label>Card number<input name="card_number" value={cardNumber} onChange={(event) => setCardNumber(event.target.value.replace(/\D/g, "").slice(0, 19).replace(/(.{4})/g, "$1 ").trim())} required inputMode="numeric" autoComplete="cc-number" maxLength={23} placeholder="1234 5678 9012 3456" /></label><div className="card-row"><label>Expiration<input name="card_expiration" value={expiration} onChange={(event) => { const digits = event.target.value.replace(/\D/g, "").slice(0, 4); setExpiration(digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits); }} required placeholder="MM/YY" autoComplete="cc-exp" maxLength={5} /></label><label>CVV<input name="card_cvv" value={cvc} onChange={(event) => setCvc(event.target.value.replace(/\D/g, "").slice(0, 4))} required inputMode="numeric" autoComplete="cc-csc" minLength={3} maxLength={4} placeholder="123" /></label></div><p className="payment-help">Card details are used only for this checkout form and are not saved.</p></div>}
       <button className="button" type="submit" disabled={isSubmitting}>{isSubmitting ? "Submitting…" : "Submit order"}</button>
     </div>
   </form>;

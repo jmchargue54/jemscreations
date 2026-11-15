@@ -29,6 +29,7 @@ export function AdminProductsManager() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<"all" | ProductStatus>("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -150,6 +151,22 @@ export function AdminProductsManager() {
     await loadData();
   }
 
+  async function toggleActive(product: ProductRow) {
+    setError(null);
+    setMessage(null);
+    setUpdatingId(product.id);
+    const nextStatus: ProductStatus = product.status === "active" ? "inactive" : "active";
+    const { error: updateError } = await supabase.from("products").update({ status: nextStatus }).eq("id", product.id);
+    if (updateError) {
+      setError(updateError.message);
+      setUpdatingId(null);
+      return;
+    }
+    setMessage(`${product.name} is now ${nextStatus}.`);
+    await loadData();
+    setUpdatingId(null);
+  }
+
   return <>
     {!isFormOpen && <button className="button" type="button" onClick={() => setIsFormOpen(true)}>Add product</button>}
     {isFormOpen && <form className="contact-form admin-product-form" onSubmit={saveProduct}>
@@ -165,7 +182,7 @@ export function AdminProductsManager() {
     {message && <p className="auth-feedback success" role="status">{message}</p>}
     <div className="admin-product-list">
       <h2>Products</h2>
-      {products.length === 0 ? <p className="empty-state">No products have been created yet.</p> : <><div className="product-filters"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search products" aria-label="Search products" /><select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)} aria-label="Filter by category"><option value="all">All categories</option>{categories.map((category) => <option value={category.name} key={category.id}>{formatCategoryName(category.name)}</option>)}</select><select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as "all" | ProductStatus)} aria-label="Filter by status"><option value="all">All statuses</option><option value="active">Active</option><option value="sold">Sold</option><option value="inactive">Inactive</option></select></div>{filteredProducts.length === 0 ? <p className="empty-state">No products match these filters.</p> : <table><thead><tr><th>Photo</th><th>Product</th><th>Category</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead><tbody>{filteredProducts.map((product) => { const category = Array.isArray(product.categories) ? product.categories[0]?.name : product.categories?.name; return <tr key={product.id}><td><img className="admin-product-thumb" src={product.image_url ?? "/images/brand-logo-small.png"} alt="" /></td><td>{product.name}</td><td>{category ? formatCategoryName(category) : "—"}</td><td>${Number(product.price).toFixed(2)}</td><td><span className={`status ${product.status}`}>{product.status}</span></td><td><button className="table-action" type="button" onClick={() => startEditing(product)}>Edit</button>{product.status !== "sold" && <button className="table-action" type="button" onClick={() => void markAsSold(product)}>Mark sold</button>}</td></tr>; })}</tbody></table>}</>}
+      {products.length === 0 ? <p className="empty-state">No products have been created yet.</p> : <><div className="product-filters"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search products" aria-label="Search products" /><select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)} aria-label="Filter by category"><option value="all">All categories</option>{categories.map((category) => <option value={category.name} key={category.id}>{formatCategoryName(category.name)}</option>)}</select><select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as "all" | ProductStatus)} aria-label="Filter by status"><option value="all">All statuses</option><option value="active">Active</option><option value="sold">Sold</option><option value="inactive">Inactive</option></select></div>{filteredProducts.length === 0 ? <p className="empty-state">No products match these filters.</p> : <table><thead><tr><th>Photo</th><th>Product</th><th>Category</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead><tbody>{filteredProducts.map((product) => { const category = Array.isArray(product.categories) ? product.categories[0]?.name : product.categories?.name; return <tr key={product.id}><td><img className="admin-product-thumb" src={product.image_url ?? "/images/brand-logo-small.png"} alt="" /></td><td>{product.name}</td><td>{category ? formatCategoryName(category) : "—"}</td><td>${Number(product.price).toFixed(2)}</td><td><span className={`status ${product.status}`}>{product.status}</span></td><td><button className="table-action" type="button" onClick={() => startEditing(product)}>Edit</button>{product.status !== "sold" && <><button className="table-action" type="button" onClick={() => void markAsSold(product)}>Mark sold</button><button className="table-action" type="button" disabled={updatingId === product.id} onClick={() => void toggleActive(product)}>{updatingId === product.id ? "Saving…" : product.status === "active" ? "Mark inactive" : "Activate"}</button></>}</td></tr>; })}</tbody></table>}</>}
     </div>
   </>;
 }

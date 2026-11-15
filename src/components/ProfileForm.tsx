@@ -4,9 +4,9 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-type ProfileFormProps = { userId: string; initialName: string; initialEmail: string };
+type ProfileFormProps = { userId: string; initialName: string; initialEmail: string; onSaved?: (name: string, email: string) => void; onCancel?: () => void };
 
-export function ProfileForm({ userId, initialName, initialEmail }: ProfileFormProps) {
+export function ProfileForm({ userId, initialName, initialEmail, onSaved, onCancel }: ProfileFormProps) {
   const router = useRouter();
   const [displayName, setDisplayName] = useState(initialName);
   const [email, setEmail] = useState(initialEmail);
@@ -44,6 +44,7 @@ export function ProfileForm({ userId, initialName, initialEmail }: ProfileFormPr
       setMessage("Profile saved successfully.");
     }
 
+    onSaved?.(displayName.trim(), email.trim());
     setIsSaving(false);
     router.refresh();
   }
@@ -52,7 +53,7 @@ export function ProfileForm({ userId, initialName, initialEmail }: ProfileFormPr
     <form className="contact-form profile-form" onSubmit={handleSubmit}>
       <label>Display name<input value={displayName} onChange={(event) => setDisplayName(event.target.value)} autoComplete="name" /></label>
       <label>Email address<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" required /></label>
-      <button className="button" type="submit" disabled={isSaving}>{isSaving ? "Saving…" : "Save changes"}</button>
+      <div className="profile-form-actions"><button className="button" type="submit" disabled={isSaving}>{isSaving ? "Saving…" : "Save changes"}</button>{onCancel && <button className="button alt" type="button" onClick={onCancel}>Cancel</button>}</div>
     </form>
     {error && <p className="auth-feedback error" role="alert">{error}</p>}
     {message && <p className="auth-feedback success" role="status">{message}</p>}

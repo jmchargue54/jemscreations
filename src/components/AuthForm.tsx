@@ -61,9 +61,9 @@ export function AuthForm({ mode }: AuthFormProps) {
 
     if (isSignup && !result.data.session) {
       const confirmationMessage = "Account created. Check your email to confirm your account, then log in.";
-      setMessage(confirmationMessage);
       window.alert(confirmationMessage);
       setIsSubmitting(false);
+      router.push("/login");
       return;
     }
 
